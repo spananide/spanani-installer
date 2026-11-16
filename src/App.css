@@ -252,6 +252,12 @@ button:active:not(:disabled) {
   transform: translateY(1px);
 }
 
+.primary {
+  background: #9955e7;
+  color: #fff;
+  font-weight: bold;
+}
+
 .glass-card {
   border-radius: 1.25rem;
   padding: 1.1rem;

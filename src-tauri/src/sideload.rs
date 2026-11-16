@@ -4,7 +4,7 @@ use crate::{
     device::{DeviceInfoMutex, get_provider, get_provider_from_connection, get_usbmuxd},
     error::AppError,
     operation::Operation,
-    pairing::{get_sidestore_info, place_file},
+    pairing::{get_app_info_by_name, get_sidestore_info, place_file},
 };
 use isideload::{
     sideload::{application::SpecialApp, sideloader::Sideloader},
@@ -176,6 +176,72 @@ pub async fn install_sidestore_operation(
             AppError::HouseArrest(
                 "SideStore's not found".into(),
                 "The device did not report SideStore's bundle ID as installed".into(),
+            ),
+        );
+    }
+
+    op.complete("pairing")?;
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn install_spanani_store_operation(
+    handle: AppHandle,
+    window: Window,
+    device_state: State<'_, DeviceInfoMutex>,
+    sideloader_state: State<'_, SideloaderMutex>,
+) -> Result<(), AppError> {
+    let op = Operation::new("install_spanani_store".to_string(), &window);
+    op.start("download")?;
+    let filename = "SpananiStore.ipa";
+    let url = "https://github.com/spananide/spanani-store/releases/latest/download/SpananiStore.ipa";
+
+    let dest = handle
+        .path()
+        .temp_dir()
+        .map_err(|e| AppError::Filesystem("Failed to get temp dir".into(), e.to_string()))?
+        .join(filename);
+    op.fail_if_err("download", download(url, &dest).await)?;
+    op.move_on("download", "install")?;
+    let device = {
+        let device_guard = device_state.lock().unwrap();
+        match &*device_guard {
+            Some(d) => d.clone(),
+            None => return op.fail("install", AppError::NoDeviceSelected),
+        }
+    };
+    op.fail_if_err(
+        "install",
+        sideload(
+            device_state,
+            sideloader_state,
+            dest.to_string_lossy().to_string(),
+        )
+        .await,
+    )?;
+    op.move_on("install", "pairing")?;
+    let spanani_info = op.fail_if_err(
+        "pairing",
+        get_app_info_by_name(&device.info, "spanani Store").await,
+    )?;
+    if let Some(info) = spanani_info {
+        let mut usbmuxd = op.fail_if_err("pairing", get_usbmuxd().await)?;
+
+        let provider = op.fail_if_err(
+            "pairing",
+            get_provider_from_connection(&device.info, &mut usbmuxd).await,
+        )?;
+
+        op.fail_if_err(
+            "pairing",
+            place_file(device.pairing, &provider, info.bundle_id, info.path).await,
+        )?;
+    } else {
+        return op.fail(
+            "pairing",
+            AppError::HouseArrest(
+                "spanani Store not found".into(),
+                "The device did not report the spanani Store as installed".into(),
             ),
         );
     }

@@ -36,6 +36,27 @@ type OperationFailedUpdate = {
 
 export type OperationUpdate = OperationInfoUpdate | OperationFailedUpdate;
 
+export const installSpananiStoreOperation: Operation = {
+  id: "install_spanani_store",
+  titleKey: "operations.install_spanani_store_title",
+  successTitleKey: "operations.install_spanani_store_success_title",
+  successMessageKey: "operations.install_spanani_store_success_message",
+  steps: [
+    {
+      id: "download",
+      titleKey: "operations.install_spanani_store_step_download",
+    },
+    {
+      id: "install",
+      titleKey: "operations.install_spanani_store_step_install",
+    },
+    {
+      id: "pairing",
+      titleKey: "operations.install_spanani_store_step_pairing",
+    },
+  ],
+};
+
 export const installSideStoreOperation: Operation = {
   id: "install_sidestore",
   titleKey: "operations.install_sidestore_title",

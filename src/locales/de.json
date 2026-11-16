@@ -35,6 +35,7 @@
     "select_device": "Gerät auswählen",
     "installers": "Installer",
     "choose_build": "Build auswählen",
+    "spanani_store": "spanani Store installieren",
     "sidestore_stable": "SideStore (Stable)",
     "sidestore_nightly": "SideStore (Nightly)",
     "livecontainer_sidestore_stable": "LiveContainer + SideStore (Stable)",
@@ -98,6 +99,12 @@
     "copy_error_clipboard": "Fehler in die Zwischenablage kopieren"
   },
   "operations": {
+    "install_spanani_store_title": "spanani Store wird installiert",
+    "install_spanani_store_success_title": "spanani Store installiert!",
+    "install_spanani_store_success_message": "Öffne den spanani Store und folge der Einrichtung.",
+    "install_spanani_store_step_download": "spanani Store herunterladen",
+    "install_spanani_store_step_install": "Signieren & installieren",
+    "install_spanani_store_step_pairing": "Pairing-Datei ablegen",
     "install_sidestore_title": "SideStore wird installiert",
     "install_sidestore_success_title": "SideStore installiert!",
     "install_sidestore_success_message": "SideStore öffnen und aktualisieren, um die Installation abzuschließen!",

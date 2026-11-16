@@ -519,6 +519,50 @@ pub async fn installed_pairing_apps(
     Ok(result)
 }
 
+pub async fn get_app_info_by_name(
+    device: &DeviceInfo,
+    display_name: &str,
+) -> Result<Option<PairingAppInfo>, AppError> {
+    let provider = get_provider(device).await?;
+    let mut installation_proxy =
+        InstallationProxyClient::connect(&provider)
+            .await
+            .map_err(|e| {
+                AppError::DeviceComsWithMessage(
+                    "Failed to connect to installation proxy".into(),
+                    e.to_string(),
+                )
+            })?;
+
+    let installed_apps = installation_proxy
+        .get_apps(Some("User"), None)
+        .await
+        .map_err(|e| {
+            AppError::DeviceComsWithMessage("Failed to get installed apps".into(), e.to_string())
+        })?;
+
+    for (bundle_id, app) in installed_apps {
+        let n = app
+            .as_dictionary()
+            .and_then(|x| x.get("CFBundleDisplayName").and_then(|x| x.as_string()))
+            .ok_or(AppError::Misc("Failed to parse installed apps".to_string()))?;
+
+        if n == display_name {
+            return Ok(Some(PairingAppInfo {
+                name: n.to_string(),
+                bundle_id: bundle_id.to_string(),
+                path: PAIRING_APPS
+                    .iter()
+                    .find(|(name, _)| name == &display_name)
+                    .map(|(_, path)| path.to_string())
+                    .unwrap_or_default(),
+            }));
+        }
+    }
+
+    Ok(None)
+}
+
 pub async fn get_sidestore_info(
     device: &DeviceInfo,
     live_container: bool,

@@ -25,7 +25,10 @@ use crate::{
         place_pairing_cmd,
     },
     secure_storage::{force_disable_keyring, keyring_available},
-    sideload::{SideloaderMutex, install_sidestore_operation, sideload_operation},
+    sideload::{
+        SideloaderMutex, install_sidestore_operation, install_spanani_store_operation,
+        sideload_operation,
+    },
 };
 use tauri::Manager;
 use tracing_subscriber::{Layer, Registry, fmt, layer::SubscriberExt, util::SubscriberInitExt};
@@ -111,6 +114,7 @@ pub fn run() {
             list_devices,
             sideload_operation,
             set_selected_device,
+            install_spanani_store_operation,
             install_sidestore_operation,
             get_certificates,
             revoke_certificate,

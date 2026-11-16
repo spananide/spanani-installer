@@ -6,6 +6,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { open as openFileDialog } from "@tauri-apps/plugin-dialog";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import {
+  installSpananiStoreOperation,
   sideloadOperation,
   installSideStoreOperation,
   installLiveContainerOperation,
@@ -318,6 +319,20 @@ function App() {
             </div>
             <GlassCard className="panel">
               <div className="action-row single-row">
+                <button
+                  className="primary"
+                  onClick={() => {
+                    if (!ensuredLoggedIn() || !ensureSelectedDevice()) return;
+                    startOperation(installSpananiStoreOperation, {}).catch(
+                      (e) => {
+                        console.log(e.type);
+                        console.error(e.message);
+                      },
+                    );
+                  }}
+                >
+                  {t("app.spanani_store")}
+                </button>
                 <button
                   onClick={() => {
                     if (!ensuredLoggedIn() || !ensureSelectedDevice()) return;
