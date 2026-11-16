@@ -1,26 +1,7 @@
-.error-inner {
-  background-color: rgba(0, 0, 0, 0.4);
-  overflow: auto;
-  padding: 0.65em;
-  border-radius: 12px;
-  font-family: "SF Mono", "Menlo", monospace;
-  font-size: 0.85rem;
-  user-select: text;
-  -webkit-user-select: text;
-}
-
 .error-outer {
   display: flex;
   flex-direction: column;
-  flex: 1;
-}
-
-.error-outer h2 {
-  margin: 0;
-}
-
-.error-outer p {
-  margin: 0;
+  gap: 12px;
 }
 
 .error-header {
@@ -30,38 +11,90 @@
   gap: 1rem;
 }
 
+.error-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.error-icon {
+  color: var(--danger);
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.error-header h2 {
+  font-size: 18px;
+  margin: 0;
+  color: var(--ink);
+}
+
+.error-copy-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.error-inner {
+  background-color: var(--paper-sunk);
+  border: 1px solid var(--danger-border);
+  color: var(--danger);
+  overflow: auto;
+  padding: 12px;
+  border-radius: var(--radius-inner);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  user-select: text;
+  -webkit-user-select: text;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 180px;
+}
+
 .error-more-details {
   cursor: pointer;
-  padding-top: 0.25rem;
-  padding-bottom: 0.5rem;
+  padding: 4px 0;
+  color: var(--ink-soft);
+  font-size: 12px;
   text-decoration: underline;
 }
 
-.error-details-measure {
-  visibility: hidden;
-  max-height: 0;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  overflow: hidden;
-  line-height: 0;
-}
-
-.error-details {
-  margin-top: 0;
+.error-more-details:hover {
+  color: var(--ink);
 }
 
 .error-link {
-  /* color: var(--accent-primary); */
+  color: var(--accent);
   cursor: pointer;
   text-decoration: underline;
 }
 
+.error-link:hover {
+  color: var(--ink);
+}
+
 .suggestions {
-  padding: 0 0 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.suggestions h3 {
+  font-size: 14px;
+  color: var(--ink);
 }
 
 .suggestions ul {
-  margin: 0 0 0.5rem 0;
-  padding-left: 2rem;
+  padding-left: 20px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.error-support-text {
+  color: var(--ink-faint);
+  font-size: 12px;
+  margin-top: 4px;
 }

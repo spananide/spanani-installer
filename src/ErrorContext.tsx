@@ -9,7 +9,7 @@ import { Modal } from "./components/Modal";
 import "./ErrorContext.css";
 import { toast } from "sonner";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useStore } from "./StoreContext";
 import {
   AppError,
@@ -18,6 +18,7 @@ import {
   parseLinkToken,
 } from "./errors";
 import { usePlatform } from "./PlatformContext";
+import { FaCircleExclamation, FaCopy } from "react-icons/fa6";
 
 export const ErrorContext = createContext<{
   err: (msg: string, err: AppError) => string;
@@ -52,7 +53,6 @@ export const ErrorProvider: React.FC<{ children: React.ReactNode }> = ({
       return;
     }
     setSuggestions(getSuggestions(error.type));
-    // a little bit gross but it gets the job done.
     let lines =
       error?.message.split("\n").filter((line) => line.includes("●")) ?? [];
     if (lines.length > 0) {
@@ -64,7 +64,7 @@ export const ErrorProvider: React.FC<{ children: React.ReactNode }> = ({
     <ErrorContext.Provider
       value={{
         err: (msg: string, err: AppError) => {
-          console.log(err);
+          console.error(msg, err);
           setMsg(msg);
           setError(err);
           setMoreDetailsOpen(false);
@@ -83,8 +83,12 @@ export const ErrorProvider: React.FC<{ children: React.ReactNode }> = ({
       >
         <div className="error-outer">
           <div className="error-header">
-            <h2>{t("error.title", { msg: msg ?? t("error.unknown") })}</h2>
+            <div className="error-title-wrap">
+              <FaCircleExclamation className="error-icon" />
+              <h2>{t("error.title", { msg: msg ?? t("error.unknown") })}</h2>
+            </div>
             <button
+              className="error-copy-btn"
               onClick={() => {
                 navigator.clipboard.writeText(
                   "```\n" +
@@ -95,7 +99,7 @@ export const ErrorProvider: React.FC<{ children: React.ReactNode }> = ({
                 toast.success(t("common.copied_success"));
               }}
             >
-              {t("common.copy_to_clipboard")}
+              <FaCopy /> {t("common.copy_to_clipboard")}
             </button>
           </div>
           {simpleError && <pre className="error-inner">{simpleError}</pre>}
@@ -108,11 +112,6 @@ export const ErrorProvider: React.FC<{ children: React.ReactNode }> = ({
             >
               {t("common.more_details")} {moreDetailsOpen ? "▲" : "▼"}
             </p>
-          )}
-          {simpleError && !moreDetailsOpen && (
-            <pre className="error-inner error-details-measure">
-              {error?.message.replace(/^\n+/, "")}
-            </pre>
           )}
           {(moreDetailsOpen || !simpleError) && (
             <pre
@@ -153,33 +152,15 @@ export const ErrorProvider: React.FC<{ children: React.ReactNode }> = ({
               </ul>
             )}
             {error?.type !== "underage" && (
-              <p>
-                <Trans
-                  i18nKey="error.support_message"
-                  components={{
-                    discord: (
-                      <span
-                        onClick={() => openUrl("https://discord.gg/EA6yVgydBz")}
-                        role="link"
-                        className="error-link"
-                      />
-                    ),
-                    github: (
-                      <span
-                        onClick={() =>
-                          openUrl("https://github.com/nab138/iloader/issues")
-                        }
-                        role="link"
-                        className="error-link"
-                      />
-                    ),
-                  }}
-                />
+              <p className="error-support-text">
+                {t("error.support_message")}
               </p>
             )}
           </div>
 
           <button
+            className="primary"
+            style={{ width: "100%", marginTop: "8px" }}
             onClick={() => {
               setError(null);
               setMsg(null);

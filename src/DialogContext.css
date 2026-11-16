@@ -1,17 +1,28 @@
+.dialog-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dialog-title {
+  margin-top: 0;
+  font-size: 20px;
+  color: var(--ink);
+}
+
+.dialog-message {
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .dialog-buttons {
   display: flex;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .dialog-buttons button {
   flex: 1;
-}
-
-.dialog h2 {
-  margin-top: 0;
-}
-
-.dialog {
-  max-width: min(70vw, 600px);
+  padding: 10px 16px;
 }

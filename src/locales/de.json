@@ -1,5 +1,5 @@
-{
-  "subtitle": "Sideloading-Begleiter",
+﻿{
+  "subtitle": "spanani Store Installer",
   "version": "Version",
   "common": {
     "confirm": "Bestätigen",
@@ -21,8 +21,6 @@
   },
   "app": {
     "language": "Sprache",
-    "github": "GitHub",
-    "open_github_failed": "GitHub-Link konnte nicht geöffnet werden",
     "section_account": "Konto",
     "section_placeholder": "Platzhalter",
     "section_management": "Verwaltung",
@@ -45,7 +43,7 @@
     "must_be_logged_in": "Du musst angemeldet sein!",
     "must_select_device": "Du musst ein Gerät auswählen!",
     "ipa_files": "IPA-Dateien",
-    "logo_alt": "iloader-Logo"
+    "logo_alt": "spanani-Logo"
   },
   "apple_id": {
     "title": "Apple-ID",
@@ -65,42 +63,47 @@
     "add_account": "Konto hinzufügen +",
     "new_login": "Neue Anmeldung",
     "email_placeholder": "Apple-ID E-Mail...",
-    "password_placeholder": "Apple-ID Passwort...",
+    "password_placeholder": "Passwort...",
     "save_credentials": "Anmeldedaten speichern",
     "enter_email_password": "Bitte E-Mail und Passwort eingeben.",
     "valid_email": "Bitte eine gültige E-Mail-Adresse eingeben.",
     "login": "Anmelden",
     "two_factor_title": "Zwei-Faktor-Authentifizierung",
-    "two_factor_prompt": "Bitte den Bestätigungscode eingeben, der an dein Gerät gesendet wurde.",
+    "two_factor_prompt": "Bitte den 6-stelligen Bestätigungscode eingeben, der an dein Apple-Gerät gesendet wurde.",
     "verification_placeholder": "Bestätigungscode...",
     "valid_6digit": "Bitte einen gültigen 6-stelligen Code eingeben.",
-    "submit": "Absenden",
+    "submit": "Bestätigen",
     "max_certs_title": "Maximale Zertifikatanzahl erreicht",
-    "max_certs_desc": "iloader widerruft deine vorhandenen Zertifikate und erstellt ein neues.",
+    "max_certs_desc": "spanani Installer widerruft deine vorhandenen Zertifikate und erstellt ein neues.",
     "hide_certificate_list": "Zertifikatliste ausblenden",
     "choose_what_to_revoke": "Auswählen, was widerrufen werden soll",
-    "continue": "Weiter"
+    "continue": "Weiter",
+    "no_keyring_available": "Anmeldedaten können auf diesem System nicht sicher gespeichert werden."
   },
   "device": {
-    "title": "iDevice",
+    "title": "Gerät",
     "failed_select_prefix": "Gerät konnte nicht ausgewählt werden: ",
-    "loading_devices": "Geräte werden geladen...",
+    "loading_devices": "Geräte werden gesucht...",
     "no_devices_found": "Keine Geräte gefunden",
     "found_device": "Gerät gefunden",
     "found_devices": "Geräte gefunden",
     "unable_load_devices_prefix": "Geräte konnten nicht geladen werden: ",
     "no_devices_found_period": "Keine Geräte gefunden.",
-    "selected": "Ausgewählt"
+    "selected": "Ausgewählt",
+    "pairing_in_progress_header": "Kopplung mit {{device}}...",
+    "pairing_in_progress_hint": "Bitte entsperre dein iPhone und tippe auf \"Vertrauen\". Gib bei Aufforderung deinen Sperrcode ein.",
+    "pairing_cancel": "Abbrechen",
+    "failed_select": "Gerät konnte nicht ausgewählt werden"
   },
   "operation": {
     "failed": "Vorgang fehlgeschlagen.",
     "completed": "Vorgang abgeschlossen",
     "please_wait": "Bitte warten...",
-    "copy_error_clipboard": "Fehler in die Zwischenablage kopieren"
+    "copy_error_clipboard": "Fehler kopieren"
   },
   "operations": {
     "install_spanani_store_title": "spanani Store wird installiert",
-    "install_spanani_store_success_title": "spanani Store installiert!",
+    "install_spanani_store_success_title": "Fertig!",
     "install_spanani_store_success_message": "Öffne den spanani Store und folge der Einrichtung.",
     "install_spanani_store_step_download": "spanani Store herunterladen",
     "install_spanani_store_step_install": "Signieren & installieren",
@@ -170,7 +173,8 @@
     "pairing_file_exported_success": "Pairing-Datei erfolgreich exportiert!",
     "failed_export_pairing_file": "Pairing-Datei konnte nicht exportiert werden",
     "export_not_recommended": "Exportieren (Nicht empfohlen)",
-    "refresh_installed_apps": "Installierte Apps aktualisieren"
+    "refresh_installed_apps": "Installierte Apps aktualisieren",
+    "place_all": "In alle Apps ablegen"
   },
   "settings": {
     "anisette_server": "Anisette-Server:",
@@ -191,7 +195,14 @@
     "info": "Info",
     "warn": "Warnung",
     "error": "Fehler",
-    "language_hint": "Du kannst <translation>hier</translation> bei der Übersetzung helfen."
+    "language_hint": "Du kannst bei der Übersetzung helfen.",
+    "delete_stored_rppairing": "Pairing-Datei zurücksetzen",
+    "delete_stored_rppairing_message": "Möchtest du die gespeicherte Pairing-Datei für dieses Gerät wirklich löschen? Dies erfordert eine erneute Kopplung.",
+    "deleting_stored_rppairing": "Pairing-Datei wird gelöscht...",
+    "stored_rppairing_deleted_success": "Gespeicherte Pairing-Datei erfolgreich gelöscht!",
+    "failed_delete_stored_rppairing": "Pairing-Datei konnte nicht gelöscht werden",
+    "dont_use_keyring": "Schlüsselbund nicht verwenden",
+    "dont_use_keyring_message": "Dies speichert Pairing-Dateien, Anisette-Status und Zertifikate direkt auf der Festplatte. Nur aktivieren, wenn der Standardspeicher nicht funktioniert."
   },
   "dialog": {
     "confirm": "Bestätigen",
@@ -200,12 +211,138 @@
   "error": {
     "title": "Ein Fehler ist aufgetreten: {{msg}}",
     "unknown": "Unbekannt",
-    "support_message": "Wenn das Problem weiterhin besteht, \"In die Zwischenablage kopieren\" drücken und den kopierten Fehler im <discord>Discord</discord> oder als <github>GitHub-Issue</github> melden."
+    "suggestions_heading": "Lösungsvorschläge",
+    "support_message": "Wenn das Problem weiterhin besteht, kopiere die Fehlermeldung und wende dich an den Support.",
+    "suggestions": {
+      "underage": [
+        "Deine Apple-ID erfüllt möglicherweise nicht das Mindestalter für Entwicklerdienste."
+      ],
+      "account_locked": [
+        "Keine Sorge! Dies tritt meist nach mehreren Fehlversuchen auf.",
+        "Besuche ((link:https://iforgot.apple.com/)), um deinen Account zu entsperren."
+      ],
+      "auth": [
+        "Überprüfe deine Anmeldedaten und versuche es erneut.",
+        "Falls das Problem bestehen bleibt, versuche eine andere Apple-ID.",
+        "Sicherheitsschlüssel-2FA wird nicht unterstützt. Verwende normales 2FA auf einem vertrauenswürdigen Gerät."
+      ],
+      "download": [
+        "Der Download ist fehlgeschlagen. Bitte prüfe deine Internetverbindung."
+      ],
+      "house_arrest": [
+        "Stelle sicher, dass dein Gerät nicht auf einer fehlerhaften Beta-Version läuft."
+      ],
+      "pairing": [
+        "Schließe das iPhone erneut an und wiederhole den Vorgang.",
+        "Stelle sicher, dass auf dem iPhone ein Code eingerichtet ist.",
+        "Verwende ein USB-Kabel statt WLAN."
+      ],
+      "canceled": [],
+      "operation_update": [],
+      "usbmuxd": [
+        "[platform::windows]Stelle sicher, dass ((link:https://apple.co/ms:iTunes)) installiert ist und dein iPhone erkennt.",
+        "[platform::windows]Installiere iTunes direkt von apple.com (nicht aus dem Microsoft Store).",
+        "[platform::linux]Stelle sicher, dass usbmuxd installiert ist und läuft."
+      ],
+      "trust": [
+        "Entsperre dein iPhone, gehe zum Homescreen und tippe auf \"Vertrauen\"."
+      ],
+      "device_coms": [
+        "Stelle sicher, dass das iPhone fest mit dem Computer verbunden ist.",
+        "Trenne das Kabel und schließe es wieder an. Versuche ggf. einen anderen USB-Anschluss."
+      ],
+      "not_logged_in": ["Bitte melde dich zuerst mit deiner Apple-ID an."],
+      "no_device_selected": ["Bitte wähle zuerst ein Gerät aus."],
+      "anisette": [
+        "Stelle sicher, dass dein Computer mit dem Internet verbunden ist.",
+        "Wechsle in den Werkzeugen den Anisette-Server.",
+        "Prüfe, ob ((link:{{anisetteServerUrl}})) erreichbar ist."
+      ],
+      "keyring": [
+        "Aktiviere in den Einstellungen \"Schlüsselbund nicht verwenden\", falls dieser Fehler wiederholt auftritt."
+      ],
+      "misc": [
+        "Versuche es erneut. Ein Neustart der App, des iPhones oder des PCs kann helfen."
+      ],
+      "admin": [
+        "Versuche, die App als Administrator auszuführen."
+      ],
+      "filesystem": [
+        "Stelle sicher, dass die App Schreibrechte auf deinem System hat."
+      ],
+      "not_enough_app_ids": [
+        "Du hast nicht genügend freie App-IDs. Bei kostenlosen Apple-IDs verfallen IDs nach 7 Tagen."
+      ],
+      "max_apps": [
+        "Mit einer kostenlosen Apple-ID können maximal 3 Apps gleichzeitig installiert sein.",
+        "Lösche andere Apps, um Platz freizugeben."
+      ]
+    }
   },
-  "update": {
-    "new_version_available": "Eine neue Version ist verfügbar: {{version}}. Möchtest du aktualisieren?",
-    "updating": "Wird aktualisiert...",
-    "downloaded_restarting": "Update heruntergeladen! App wird neu gestartet...",
-    "failed_download": "Update konnte nicht heruntergeladen werden: {{error}}"
+  "flow": {
+    "step1_badge": "1",
+    "step1_title": "Gerät",
+    "step1_subtitle": "iPhone per Kabel anschließen und entsperren, dem Computer vertrauen",
+    "step1_driver_warning_title": "Apple-Gerätetreiber fehlt?",
+    "step1_driver_warning_desc": "Installiere iTunes von apple.com (nicht aus dem Microsoft Store).",
+    "step1_download_itunes": "iTunes von apple.com laden",
+    "step1_rescan": "Erneut suchen",
+    "step1_change": "Ändern",
+    "step1_no_device": "Kein Gerät gefunden",
+    "step1_selected": "Ausgewählt",
+    "step1_pairing": "Kopplung läuft...",
+    "step2_badge": "2",
+    "step2_title": "Apple-ID",
+    "step2_subtitle": "Melde dich mit deiner Apple-ID an",
+    "step2_privacy": "Deine Daten gehen nur an Apple.",
+    "step2_change": "Ändern",
+    "step2_logged_in_as": "Angemeldet als",
+    "step2_sign_out": "Abmelden",
+    "step2_stored_logins": "Gespeicherte Konten",
+    "step2_use_other": "Anderes Konto verwenden",
+    "step2_login_button": "Anmelden",
+    "step2_require_device_first": "Bitte wähle zuerst ein Gerät aus.",
+    "step3_badge": "3",
+    "step3_title": "Installieren",
+    "step3_subtitle": "spanani Store auf dem iPhone einrichten",
+    "step3_install_button": "spanani Store installieren",
+    "step3_disabled_hint": "Bitte schließe zuerst Schritt 1 (Gerät) und Schritt 2 (Apple-ID) ab.",
+    "step3_ready_hint": "Bereit zur Installation auf {{device}}",
+    "step3_running": "Installation läuft...",
+    "step3_step_download": "Herunterladen",
+    "step3_step_install": "Signieren & installieren",
+    "step3_step_pairing": "Pairing-Datei ablegen",
+    "step3_success_title": "Fertig!",
+    "step3_success_subtitle": "spanani Store wurde erfolgreich auf deinem iPhone installiert.",
+    "step3_next_steps_title": "Nächste Schritte auf dem iPhone:",
+    "step3_next_step_1": "1. Auf dem iPhone: Einstellungen > Allgemein > VPN & Geräteverwaltung > deiner Apple-ID vertrauen.",
+    "step3_next_step_2": "2. LocalDevVPN aus dem App Store laden und einschalten.",
+    "step3_next_step_3": "3. spanani Store öffnen.",
+    "step3_done_button": "Fertig",
+    "step3_retry_button": "Erneut versuchen",
+    "step3_copy_error": "Fehler kopieren"
+  },
+  "tools": {
+    "title": "Werkzeuge",
+    "tab_sideload": "Eigene IPA",
+    "tab_pairing": "Pairing",
+    "tab_certificates": "Zertifikate",
+    "tab_appids": "App-IDs",
+    "tab_settings": "Einstellungen",
+    "tab_more_installers": "Weitere Installer",
+    "tab_about": "Über",
+    "sideload_title": "Eigene IPA installieren",
+    "sideload_desc": "Wähle eine eigene .ipa-Datei aus, um sie zu signieren und direkt auf deinem Gerät zu installieren.",
+    "sideload_select_file": "IPA-Datei auswählen...",
+    "sideload_device_login_required": "Bitte stelle zuerst sicher, dass ein Gerät ausgewählt und die Apple-ID angemeldet ist.",
+    "certificates_title": "Zertifikate verwalten",
+    "certificates_hint": "Bei Limit: ältestes Zertifikat widerrufen",
+    "more_installers_title": "Weitere Installer",
+    "more_installers_desc": "Installiere alternative Sideloading-Tools auf deinem iPhone",
+    "about_title": "Über spanani Installer",
+    "about_attribution": "spanani Installer basiert auf iloader von nab138 (MIT-Lizenz).",
+    "about_link_label": "GitHub: nab138/iloader",
+    "about_version": "Version {{version}}",
+    "footer_about": "Über spanani Installer"
   }
 }

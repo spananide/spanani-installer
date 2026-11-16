@@ -31,7 +31,7 @@ const languages = [
   ["hu", "Magyar"],
   ["kh", "ភាសាខ្មែរ"],
   ["id", "Bahasa Indonesia"],
-  ["pt_br", "Português (Brasileiro)"]
+  ["pt_br", "Português (Brasileiro)"],
 ] as const;
 
 export const sortedLanguages = [...languages].sort((a, b) =>
@@ -60,7 +60,8 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: "en",
+    lng: "de",
+    fallbackLng: "de",
     interpolation: {
       escapeValue: false,
     },

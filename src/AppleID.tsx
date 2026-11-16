@@ -9,6 +9,15 @@ import { useStore } from "./StoreContext";
 import { useError } from "./ErrorContext";
 import { Certificate } from "./pages/Certificates";
 import { useTranslation } from "react-i18next";
+import {
+  FaCheck,
+  FaShieldHalved,
+  FaUserCheck,
+  FaArrowRightFromBracket,
+  FaTrashCan,
+  FaKey,
+  FaCircleExclamation,
+} from "react-icons/fa6";
 
 const storePromise = load("data.json");
 
@@ -16,17 +25,25 @@ export const AppleID = ({
   loggedInAs,
   setLoggedInAs,
   noKeyringAvailable,
+  isCollapsed,
+  onExpand,
+  onCompleteStep,
+  isDeviceSelected,
 }: {
   loggedInAs: string | null;
   setLoggedInAs: (id: string | null) => void;
   noKeyringAvailable: boolean;
+  isCollapsed: boolean;
+  onExpand: () => void;
+  onCompleteStep?: () => void;
+  isDeviceSelected: boolean;
 }) => {
   const { t } = useTranslation();
   const [storedIds, setStoredIds] = useState<string[]>([]);
   const [forceUpdateIds, setForceUpdateIds] = useState<number>(0);
   const [emailInput, setEmailInput] = useState<string>("");
   const [passwordInput, setPasswordInput] = useState<string>("");
-  const [saveCredentials, setSaveCredentials] = useState<boolean>(false);
+  const [saveCredentials, setSaveCredentials] = useState<boolean>(true);
   const [tfaOpen, setTfaOpen] = useState<boolean>(false);
   const [tfaCode, setTfaCode] = useState<string>("");
   const [addAccountOpen, setAddAccountOpen] = useState<boolean>(false);
@@ -40,19 +57,32 @@ export const AppleID = ({
   const { err } = useError();
 
   useEffect(() => {
-    let getLoggedInAs = async () => {
-      let account = await invoke<string | null>("logged_in_as");
-      setLoggedInAs(account);
+    let isMounted = true;
+    const getLoggedInAs = async () => {
+      try {
+        const account = await invoke<string | null>("logged_in_as");
+        if (isMounted) setLoggedInAs(account);
+      } catch (e) {
+        console.error("Failed to get logged_in_as:", e);
+      }
     };
-    let getStoredIds = async () => {
-      const store = await storePromise;
-      let ids = (await store.get<string[]>("ids")) ?? [];
-      setStoredIds(ids);
+    const getStoredIds = async () => {
+      try {
+        const store = await storePromise;
+        const ids = (await store.get<string[]>("ids")) ?? [];
+        if (isMounted) setStoredIds(ids);
+      } catch (e) {
+        console.error("Failed to get stored ids:", e);
+      }
     };
 
     getLoggedInAs();
     getStoredIds();
-  }, [forceUpdateIds]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [forceUpdateIds, setLoggedInAs]);
 
   useEffect(() => {
     setSelectedSerials(certs?.map((c) => c.serialNumber) ?? []);
@@ -84,8 +114,8 @@ export const AppleID = ({
       (async () => {
         const unlistenFn = await listen<Certificate[]>(
           "max-certs-reached",
-          (certs) => {
-            setCerts(certs.payload);
+          (certsEvent) => {
+            setCerts(certsEvent.payload);
           },
         );
         certUnlisten.current = unlistenFn;
@@ -97,24 +127,83 @@ export const AppleID = ({
     };
   }, []);
 
+  // Collapsed summary view
+  if (isCollapsed && loggedInAs) {
+    return (
+      <div className="step-card is-collapsed" onClick={onExpand} role="button" tabIndex={0}>
+        <div className="collapsed-left">
+          <div className="step-badge-done">
+            <FaCheck />
+          </div>
+          <span className="step-collapsed-title">
+            {t("flow.step2_badge")}. {t("flow.step2_title")}
+          </span>
+        </div>
+
+        <div className="collapsed-center">
+          <span className="detected-pill">
+            <FaUserCheck />
+            <span>{loggedInAs}</span>
+          </span>
+        </div>
+
+        <div className="collapsed-right">
+          <button
+            type="button"
+            className="btn-change"
+            onClick={(e) => {
+              e.stopPropagation();
+              onExpand();
+            }}
+          >
+            {t("flow.step2_change")}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Active expanded view
   return (
-    <>
-      <h2 style={{ marginTop: 0 }}>{t("apple_id.title")}</h2>
-      <div className="credentials-container">
+    <div className="step-card is-active">
+      <div className="step-card-header">
+        <div className="step-badge active">{t("flow.step2_badge")}</div>
+        <div className="step-title-group">
+          <h3>{t("flow.step2_title")}</h3>
+          <p className="step-subtitle">{t("flow.step2_subtitle")}</p>
+        </div>
+      </div>
+
+      <div className="step-card-body">
+        {/* Privacy Note */}
+        <div className="privacy-badge">
+          <FaShieldHalved className="privacy-icon" />
+          <span>{t("flow.step2_privacy")}</span>
+        </div>
+
+        {!isDeviceSelected && (
+          <div className="hint-banner warning" style={{ marginBottom: "14px" }}>
+            {t("flow.step2_require_device_first")}
+          </div>
+        )}
+
+        {/* Currently Logged In Card */}
         {loggedInAs && (
-          <div className="logged-in-as card green">
-            <div className="logged-info">
-              <span className="logged-label">{t("apple_id.logged_in_as")}</span>
-              <span className="logged-value">{loggedInAs}</span>
+          <div className="logged-in-box">
+            <div className="logged-in-info">
+              <span className="logged-in-label">{t("flow.step2_logged_in_as")}</span>
+              <strong className="logged-in-email">{loggedInAs}</strong>
             </div>
-            <div className="action-row">
+
+            <div className="logged-in-actions">
               <button
                 type="button"
-                className="action-button danger"
+                className="danger"
                 onClick={async () => {
-                  let promise = async () => {
+                  const promise = async () => {
                     await invoke("invalidate_account");
                     setForceUpdateIds((v) => v + 1);
+                    setLoggedInAs(null);
                   };
                   toast.promise(promise, {
                     loading: t("apple_id.signing_out"),
@@ -123,46 +212,64 @@ export const AppleID = ({
                   });
                 }}
               >
-                {t("apple_id.sign_out")}
+                <FaArrowRightFromBracket />
+                <span>{t("flow.step2_sign_out")}</span>
               </button>
+
+              {onCompleteStep && (
+                <button
+                  type="button"
+                  className="primary"
+                  onClick={onCompleteStep}
+                >
+                  <span>{t("apple_id.continue")}</span>
+                </button>
+              )}
             </div>
           </div>
         )}
-        {storedIds.length > 0 && (
-          <div className="stored-ids">
-            <h3 style={{ margin: 0 }}>{t("apple_id.saved_logins")}</h3>
-            <div className="stored-container card">
+
+        {/* Stored Accounts List */}
+        {!loggedInAs && storedIds.length > 0 && !addAccountOpen && (
+          <div className="stored-accounts-section">
+            <h4 className="section-small-title">{t("flow.step2_stored_logins")}</h4>
+            <div className="stored-accounts-list">
               {storedIds.map((id) => (
-                <div key={id} className="stored">
-                  <div className="stored-email">{id}</div>
-                  <div className="action-row">
-                    {!loggedInAs && (
-                      <button
-                        type="button"
-                        className="action-button primary"
-                        onClick={() => {
-                          let promise = async () => {
-                            await invoke("login_stored", {
-                              email: id,
-                              anisetteServer,
-                            });
-                            setForceUpdateIds((v) => v + 1);
-                          };
-                          toast.promise(promise, {
-                            loading: t("apple_id.logging_in"),
-                            success: t("apple_id.logged_in_success"),
-                            error: (e) => err(t("apple_id.login_failed"), e),
-                          });
-                        }}
-                      >
-                        {t("apple_id.sign_in")}
-                      </button>
-                    )}
+                <div key={id} className="stored-account-row">
+                  <div className="stored-account-email">
+                    <FaKey className="key-icon" />
+                    <span>{id}</span>
+                  </div>
+
+                  <div className="stored-account-actions">
                     <button
                       type="button"
-                      className="action-button danger"
+                      className="primary btn-sm"
+                      onClick={() => {
+                        const promise = async () => {
+                          await invoke("login_stored", {
+                            email: id,
+                            anisetteServer,
+                          });
+                          setForceUpdateIds((v) => v + 1);
+                          setLoggedInAs(id);
+                          if (onCompleteStep) onCompleteStep();
+                        };
+                        toast.promise(promise, {
+                          loading: t("apple_id.logging_in"),
+                          success: t("apple_id.logged_in_success"),
+                          error: (e) => err(t("apple_id.login_failed"), e),
+                        });
+                      }}
+                    >
+                      {t("apple_id.sign_in")}
+                    </button>
+
+                    <button
+                      type="button"
+                      className="danger btn-sm"
                       onClick={async () => {
-                        let promise = async () => {
+                        const promise = async () => {
                           await invoke("delete_account", { email: id });
                           setForceUpdateIds((v) => v + 1);
                         };
@@ -173,193 +280,217 @@ export const AppleID = ({
                         });
                       }}
                     >
-                      {t("common.delete")}
+                      <FaTrashCan />
                     </button>
                   </div>
                 </div>
               ))}
-              {!addAccountOpen && (
-                <div
-                  className="stored add-account"
-                  onClick={() => {
-                    setAddAccountOpen(true);
-                  }}
-                >
-                  {t("apple_id.add_account")}
-                </div>
-              )}
             </div>
+
+            <button
+              type="button"
+              className="btn-use-other"
+              onClick={() => setAddAccountOpen(true)}
+            >
+              {t("flow.step2_use_other")}
+            </button>
           </div>
         )}
-        {((loggedInAs === null && storedIds.length === 0) ||
-          addAccountOpen) && (
-          <div className="new-login">
-            {storedIds.length > 0 && <h3>{t("apple_id.new_login")}</h3>}
-            <form
-              className="credentials"
-              onSubmit={async (e) => {
-                e.preventDefault();
-                if (!emailInput || !passwordInput) {
-                  toast.warning(t("apple_id.enter_email_password"));
-                  return;
-                }
-                // if (!emailInput.includes("@")) {
-                //   toast.warning(t("apple_id.valid_email"));
-                //   return;
-                // }
-                let promise = async () => {
-                  await invoke("login_new", {
-                    email: emailInput,
-                    password: passwordInput,
-                    saveCredentials: saveCredentials,
-                    anisetteServer,
-                  });
-                  setForceUpdateIds((v) => v + 1);
-                };
-                toast.promise(promise, {
-                  loading: t("apple_id.logging_in"),
-                  success: t("apple_id.logged_in_success"),
-                  error: (e) => err(t("apple_id.login_failed"), e),
+
+        {/* New Login Form */}
+        {!loggedInAs && (storedIds.length === 0 || addAccountOpen) && (
+          <form
+            className="apple-login-form"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (!emailInput || !passwordInput) {
+                toast.warning(t("apple_id.enter_email_password"));
+                return;
+              }
+              const promise = async () => {
+                await invoke("login_new", {
+                  email: emailInput,
+                  password: passwordInput,
+                  saveCredentials,
+                  anisetteServer,
                 });
-              }}
-            >
+                setForceUpdateIds((v) => v + 1);
+                setLoggedInAs(emailInput);
+                setAddAccountOpen(false);
+                if (onCompleteStep) onCompleteStep();
+              };
+              toast.promise(promise, {
+                loading: t("apple_id.logging_in"),
+                success: t("apple_id.logged_in_success"),
+                error: (e) => err(t("apple_id.login_failed"), e),
+              });
+            }}
+          >
+            <div className="input-field">
+              <label htmlFor="apple-email">{t("flow.step2_title")} E-Mail</label>
               <input
+                id="apple-email"
                 type="text"
+                autoComplete="username"
                 placeholder={t("apple_id.email_placeholder")}
                 value={emailInput}
                 onChange={(e) => setEmailInput(e.target.value)}
               />
+            </div>
+
+            <div className="input-field">
+              <label htmlFor="apple-password">Passwort</label>
               <input
+                id="apple-password"
                 type="password"
+                autoComplete="current-password"
                 placeholder={t("apple_id.password_placeholder")}
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
               />
-              {noKeyringAvailable ? (
-                <p className="settings-hint credentials-warning">
-                  {t("apple_id.no_keyring_available")}
-                </p>
-              ) : (
-                <div className="save-credentials">
-                  <input
-                    type="checkbox"
-                    id="save-credentials"
-                    checked={saveCredentials}
-                    onChange={(e) => setSaveCredentials(e.target.checked)}
-                  />
-                  <label htmlFor="save-credentials">
-                    {t("apple_id.save_credentials")}
-                  </label>
-                </div>
-              )}
-              <button type="submit">{t("apple_id.login")}</button>
+            </div>
+
+            {noKeyringAvailable ? (
+              <p className="keyring-warning-text">
+                <FaCircleExclamation />
+                <span>{t("apple_id.no_keyring_available")}</span>
+              </p>
+            ) : (
+              <label className="save-credentials-label">
+                <input
+                  type="checkbox"
+                  checked={saveCredentials}
+                  onChange={(e) => setSaveCredentials(e.target.checked)}
+                />
+                <span>{t("apple_id.save_credentials")}</span>
+              </label>
+            )}
+
+            <div className="form-actions">
+              <button type="submit" className="primary btn-large">
+                {t("flow.step2_login_button")}
+              </button>
               {addAccountOpen && storedIds.length > 0 && (
                 <button
-                  onClick={() => {
-                    setAddAccountOpen(false);
-                  }}
+                  type="button"
+                  onClick={() => setAddAccountOpen(false)}
                 >
                   {t("common.cancel")}
                 </button>
               )}
-            </form>
-          </div>
+            </div>
+          </form>
         )}
       </div>
+
+      {/* 2FA Modal */}
       <Modal sizeFit isOpen={tfaOpen} zIndex={2000}>
-        <h2>{t("apple_id.two_factor_title")}</h2>
-        <p>{t("apple_id.two_factor_prompt")}</p>
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            if (tfaCode.length !== 6) {
-              toast.warning(t("apple_id.valid_6digit"));
-              return;
-            }
-            await emit("2fa-recieved", tfaCode);
-            setTfaOpen(false);
-            setTfaCode("");
-          }}
-        >
-          <input
-            type="text"
-            placeholder={t("apple_id.verification_placeholder")}
-            value={tfaCode}
-            onChange={(e) => setTfaCode(e.target.value)}
-            style={{ marginRight: "0.5em" }}
-          />
-          <button type="submit">{t("apple_id.submit")}</button>
-        </form>
-      </Modal>
-      <Modal sizeFit isOpen={certs !== null} zIndex={2000}>
-        <h2 className="cert-header">{t("apple_id.max_certs_title")}</h2>
-        <p className="certs-desc">{t("apple_id.max_certs_desc")}</p>
-        <p
-          className="certs-see"
-          role="button"
-          tabIndex={0}
-          onClick={() => setChooseCertsOpen((v) => !v)}
-        >
-          {chooseCertsOpen
-            ? t("apple_id.hide_certificate_list")
-            : t("apple_id.choose_what_to_revoke")}
-        </p>
-        {chooseCertsOpen && certs && (
-          <div className="certs-list">
-            {certs.map((cert) => (
-              <div
-                key={cert.serialNumber}
-                className="cert-item"
+        <div className="tfa-modal-content">
+          <h3>{t("apple_id.two_factor_title")}</h3>
+          <p>{t("apple_id.two_factor_prompt")}</p>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (tfaCode.length !== 6) {
+                toast.warning(t("apple_id.valid_6digit"));
+                return;
+              }
+              await emit("2fa-recieved", tfaCode);
+              setTfaOpen(false);
+              setTfaCode("");
+            }}
+          >
+            <input
+              type="text"
+              className="tfa-code-input"
+              maxLength={6}
+              placeholder="123456"
+              value={tfaCode}
+              onChange={(e) => setTfaCode(e.target.value.trim())}
+              autoFocus
+            />
+            <div className="tfa-actions">
+              <button type="submit" className="primary">
+                {t("apple_id.submit")}
+              </button>
+              <button
+                type="button"
                 onClick={() => {
-                  setSelectedSerials((prev) => {
-                    if (prev.includes(cert.serialNumber)) {
-                      return prev.filter((s) => s !== cert.serialNumber);
-                    } else {
-                      return [...prev, cert.serialNumber];
-                    }
-                  });
+                  setTfaOpen(false);
+                  setTfaCode("");
                 }}
               >
-                <input
-                  type="checkbox"
-                  id={cert.serialNumber}
-                  name={cert.serialNumber}
-                  value={cert.serialNumber}
-                  checked={selectedSerials.includes(cert.serialNumber)}
-                />
-                <label htmlFor={cert.serialNumber}>
-                  {cert.name} - {cert.machineName}
-                </label>
-              </div>
-            ))}
-          </div>
-        )}
-        <div className="certs-buttons">
-          <button
-            className="action-button primary"
-            onClick={async () => {
-              await emit(
-                "max-certs-response",
-                selectedSerials.length > 0 ? selectedSerials : null,
-              );
-              setCerts(null);
-              setChooseCertsOpen(false);
-            }}
-          >
-            {t("apple_id.continue")}
-          </button>
-          <button
-            className="action-button danger"
-            onClick={async () => {
-              await emit("max-certs-response", null);
-              setCerts(null);
-              setChooseCertsOpen(false);
-            }}
-          >
-            {t("common.cancel")}
-          </button>
+                {t("common.cancel")}
+              </button>
+            </div>
+          </form>
         </div>
       </Modal>
-    </>
+
+      {/* Max Certs Modal */}
+      <Modal sizeFit isOpen={certs !== null} zIndex={2000}>
+        <div className="certs-modal-content">
+          <h3>{t("apple_id.max_certs_title")}</h3>
+          <p>{t("apple_id.max_certs_desc")}</p>
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => setChooseCertsOpen((v) => !v)}
+          >
+            {chooseCertsOpen
+              ? t("apple_id.hide_certificate_list")
+              : t("apple_id.choose_what_to_revoke")}
+          </button>
+
+          {chooseCertsOpen && certs && (
+            <div className="certs-list-box">
+              {certs.map((cert) => (
+                <label key={cert.serialNumber} className="cert-choice-item">
+                  <input
+                    type="checkbox"
+                    checked={selectedSerials.includes(cert.serialNumber)}
+                    onChange={() => {
+                      setSelectedSerials((prev) =>
+                        prev.includes(cert.serialNumber)
+                          ? prev.filter((s) => s !== cert.serialNumber)
+                          : [...prev, cert.serialNumber],
+                      );
+                    }}
+                  />
+                  <span>
+                    {cert.name} ({cert.machineName})
+                  </span>
+                </label>
+              ))}
+            </div>
+          )}
+
+          <div className="modal-btn-row">
+            <button
+              className="primary"
+              onClick={async () => {
+                await emit(
+                  "max-certs-response",
+                  selectedSerials.length > 0 ? selectedSerials : null,
+                );
+                setCerts(null);
+                setChooseCertsOpen(false);
+              }}
+            >
+              {t("apple_id.continue")}
+            </button>
+            <button
+              onClick={async () => {
+                await emit("max-certs-response", null);
+                setCerts(null);
+                setChooseCertsOpen(false);
+              }}
+            >
+              {t("common.cancel")}
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </div>
   );
 };

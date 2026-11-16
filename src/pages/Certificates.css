@@ -1,3 +1,43 @@
+.certificates-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-title-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-title-wrap h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.hint-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-inner);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.hint-banner.warning {
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  color: var(--warning);
+}
+
+.table-card {
+  background: var(--paper-sunk);
+  border-radius: var(--radius-inner);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
 .certificate-table-container {
   overflow-x: auto;
   width: 100%;
@@ -6,19 +46,24 @@
 .certificate-table {
   border-collapse: collapse;
   width: 100%;
-  padding: 0.5em;
+  font-size: 13px;
 }
 
 .certificate-table td,
 .certificate-table th {
-  padding: 0.65em 1em;
+  padding: 10px 14px;
   text-align: left;
 }
 
+.certificate-table th {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink-soft);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
 .certificate-item {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  margin: 0;
-  padding: 0.5em;
+  border-bottom: 1px solid var(--border);
 }
 
 .cert-item-last {
@@ -26,22 +71,39 @@
 }
 
 .cert-item-part {
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  padding-right: 0.5em;
+  border-right: 1px solid var(--border);
+  color: var(--ink);
 }
 
-.cert-item-revoke {
-  cursor: pointer;
-  color: var(--danger);
-  font-weight: 600;
+.font-mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
 }
 
-.pairing-place {
-  cursor: pointer;
-  color: var(--accent-primary);
-  font-weight: 600;
+.btn-sm {
+  padding: 4px 10px !important;
+  font-size: 12px !important;
+  border-radius: 8px !important;
 }
 
-.cert-item-revoke:hover {
-  color: #ffbb9c;
+.empty-state {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--ink-soft);
+  background: var(--paper-sunk);
+  border-radius: var(--radius-inner);
+  border: 1px solid var(--border);
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useStore } from "../StoreContext";
 import { useError } from "../ErrorContext";
 import { useTranslation } from "react-i18next";
+import { FaArrowsRotate, FaTrashCan } from "react-icons/fa6";
 
 type AppId = {
   appIdId: string;
@@ -50,7 +51,7 @@ export const AppIds = () => {
       success: t("app_ids.loaded_success"),
       error: (e) => err(t("app_ids.failed_load"), e),
     });
-  }, [setAppIds, t]);
+  }, [setAppIds, t, err]);
 
   const deleteId = useCallback(
     async (id: string) => {
@@ -64,28 +65,42 @@ export const AppIds = () => {
         error: (e) => err(t("app_ids.failed_delete"), e),
       });
     },
-    [setAppIds, loadAppIds, t],
+    [loadAppIds, t, err],
   );
 
   useEffect(() => {
     loadAppIds();
-  }, []);
+  }, [loadAppIds]);
 
   return (
-    <>
-      <h2>{t("app_ids.manage")}</h2>
+    <div className="certificates-page">
+      <div className="section-title-wrap">
+        <h2>{t("app_ids.manage")}</h2>
+        <button
+          className="btn-refresh-icon"
+          onClick={loadAppIds}
+          disabled={loading}
+          aria-label={t("common.refresh")}
+        >
+          <FaArrowsRotate className={loading ? "spin" : ""} /> {t("common.refresh")}
+        </button>
+      </div>
+
       {maxQuantity !== null && (
-        <div style={{ marginBottom: "0.5em" }}>
+        <div className="status-pill-badge">
           {t("app_ids.available", {
             available: availableQuantity,
             max: maxQuantity,
           })}
         </div>
       )}
+
       {appIds.length === 0 ? (
-        <div>{loading ? t("app_ids.loading") : t("app_ids.none_found")}</div>
+        <div className="empty-state">
+          {loading ? t("app_ids.loading") : t("app_ids.none_found")}
+        </div>
       ) : (
-        <div className="card">
+        <div className="table-card">
           <div className="certificate-table-container">
             <table className="certificate-table">
               <thead>
@@ -119,9 +134,9 @@ export const AppIds = () => {
                         ? new Date(appId.expirationDate).toLocaleDateString()
                         : t("app_ids.never")}
                     </td>
-                    <td className="cert-item-part">{appId.appIdId}</td>
+                    <td className="cert-item-part font-mono">{appId.appIdId}</td>
                     <td
-                      className="cert-item-part"
+                      className="cert-item-part font-mono"
                       style={{
                         borderRight: appIdDeletion ? undefined : "none",
                       }}
@@ -129,11 +144,13 @@ export const AppIds = () => {
                       {appId.identifier}
                     </td>
                     {appIdDeletion && (
-                      <td
-                        className="cert-item-revoke"
-                        onClick={() => deleteId(appId.appIdId)}
-                      >
-                        {t("common.delete")}
+                      <td>
+                        <button
+                          className="danger btn-sm"
+                          onClick={() => deleteId(appId.appIdId)}
+                        >
+                          <FaTrashCan /> {t("common.delete")}
+                        </button>
                       </td>
                     )}
                   </tr>
@@ -143,13 +160,6 @@ export const AppIds = () => {
           </div>
         </div>
       )}
-      <button
-        style={{ marginTop: "1em", width: "100%" }}
-        onClick={loadAppIds}
-        disabled={loading}
-      >
-        {t("common.refresh")}
-      </button>
-    </>
+    </div>
   );
 };

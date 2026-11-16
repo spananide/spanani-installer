@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useError } from "../ErrorContext";
 import { useTranslation } from "react-i18next";
+import { FaArrowsRotate, FaTriangleExclamation } from "react-icons/fa6";
 
 export type Certificate = {
   name: string;
@@ -35,7 +36,7 @@ export const Certificates = () => {
       success: t("certificates.loaded_success"),
       error: (e) => err(t("certificates.failed_load"), e),
     });
-  }, [setCertificates, t]);
+  }, [setCertificates, t, err]);
 
   const revokeCertificate = useCallback(
     async (serialNumber: string) => {
@@ -49,20 +50,38 @@ export const Certificates = () => {
         error: (e) => err(t("certificates.failed_revoke"), e),
       });
     },
-    [setCertificates, loadCertificates, t],
+    [loadCertificates, t, err],
   );
 
   useEffect(() => {
     loadCertificates();
-  }, []);
+  }, [loadCertificates]);
 
   return (
-    <>
-      <h2>{t("certificates.manage")}</h2>
+    <div className="certificates-page">
+      <div className="section-title-wrap">
+        <h2>{t("certificates.manage")}</h2>
+        <button
+          className="btn-refresh-icon"
+          onClick={loadCertificates}
+          disabled={loading}
+          aria-label={t("common.refresh")}
+        >
+          <FaArrowsRotate className={loading ? "spin" : ""} /> {t("common.refresh")}
+        </button>
+      </div>
+
+      <div className="hint-banner warning">
+        <FaTriangleExclamation />
+        <span>{t("tools.certificates_hint")}</span>
+      </div>
+
       {certificates.length === 0 ? (
-        <div>{loading ? t("certificates.loading") : t("certificates.none_found")}</div>
+        <div className="empty-state">
+          {loading ? t("certificates.loading") : t("certificates.none_found")}
+        </div>
       ) : (
-        <div className="card">
+        <div className="table-card">
           <div className="certificate-table-container">
             <table className="certificate-table">
               <thead>
@@ -84,16 +103,16 @@ export const Certificates = () => {
                     }
                   >
                     <td className="cert-item-part">{cert.name}</td>
-                    <td className="cert-item-part">{cert.serialNumber}</td>
+                    <td className="cert-item-part font-mono">{cert.serialNumber}</td>
                     <td className="cert-item-part">{cert.machineName}</td>
-                    <td className="cert-item-part">{cert.machineId}</td>
-                    <td
-                      className="cert-item-revoke"
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => revokeCertificate(cert.serialNumber)}
-                    >
-                      {t("certificates.revoke")}
+                    <td className="cert-item-part font-mono">{cert.machineId}</td>
+                    <td>
+                      <button
+                        className="danger btn-sm"
+                        onClick={() => revokeCertificate(cert.serialNumber)}
+                      >
+                        {t("certificates.revoke")}
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -102,13 +121,6 @@ export const Certificates = () => {
           </div>
         </div>
       )}
-      <button
-        style={{ marginTop: "1em", width: "100%" }}
-        onClick={loadCertificates}
-        disabled={loading}
-      >
-        {t("common.refresh")}
-      </button>
-    </>
+    </div>
   );
 };

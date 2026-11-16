@@ -1,7 +1,8 @@
 .modal-container {
   position: fixed;
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(17, 14, 23, 0.72);
   top: 0;
   left: 0;
   bottom: 0;
@@ -10,79 +11,79 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 16px;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal {
-  background: var(--glass-surface-alt);
-  border-radius: 24px;
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 35px 65px rgba(0, 0, 0, 0.65);
-  padding: 2em;
-  max-width: 95vw;
-  max-height: 90vh;
+  background: var(--paper-raised);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border);
+  padding: 24px 28px;
+  max-width: 680px;
+  width: 100%;
+  max-height: 88vh;
   box-sizing: border-box;
   position: relative;
-  color: inherit;
+  color: var(--ink);
+  animation: scaleUp 0.18s ease-out;
+}
+
+.modal.size-fit {
+  max-width: 480px;
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .modal-close {
-  font-size: 1.5rem;
   position: absolute;
-  top: 5px;
-  right: 5px;
-  margin: 0;
-  width: 1.7rem;
-  height: 1.7rem;
-  text-align: center;
-  line-height: 1.7rem;
-  background-color: transparent !important;
-  box-shadow: none;
-  border: none;
-  padding: 0;
-  color: #fff;
-}
-
-.modal-circles {
-  position: absolute;
-  bottom: 15px;
-  left: 0;
-  right: 0;
+  top: 18px;
+  right: 18px;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  background: var(--paper-sunk) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--ink-soft) !important;
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.modal-next {
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
-}
-
-.modal-prev {
-  position: absolute;
-  bottom: 15px;
-  left: 15px;
-}
-
-.page-circle {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background-color: #fff6;
-  transition: all 0.2s;
-  align-self: center;
-  position: relative;
-}
-
-.active-page {
-  background-color: #fffffff0;
+.modal-close:hover {
+  color: var(--ink) !important;
+  border-color: var(--border-hover) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 
 .modal-content {
   overflow-y: auto;
   overflow-x: hidden;
   max-width: 100%;
-  max-height: calc(85vh - 4em);
-  padding: 5px;
+  max-height: calc(88vh - 64px);
   box-sizing: border-box;
 }
