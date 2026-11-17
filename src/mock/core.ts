@@ -158,10 +158,10 @@ export async function invoke<T = any>(
               extraDetails: {
                 type: "device_coms",
                 message:
-                  "● Lockdown-Verbindung fehlgeschlagen: Gerät hat nicht rechtzeitig geantwortet.\n● Details: Device communications timed out during installation handshake.",
+                  "● Lockdown connection failed: Device did not respond in time.\n● Details: Device communications timed out during installation handshake.",
               },
             });
-            reject(new Error("Installation fehlgeschlagen"));
+            reject(new Error("Installation failed"));
           }, 950);
           return;
         }

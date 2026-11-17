@@ -39,7 +39,7 @@ export async function load(name: string): Promise<Store> {
         ? {
             "anisetteServer3-1": "mac-ani.jkcoxson.com",
             overrideKeyring: false,
-            lang: "de",
+            lang: "en",
           }
         : name === "data.json"
           ? {
