@@ -127,39 +127,155 @@ export const AppleID = ({
     };
   }, []);
 
+  const modals = (
+    <>
+      {/* 2FA Modal */}
+      <Modal sizeFit isOpen={tfaOpen} zIndex={2000}>
+        <div className="tfa-modal-content">
+          <h3>{t("apple_id.two_factor_title")}</h3>
+          <p>{t("apple_id.two_factor_prompt")}</p>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (tfaCode.length !== 6) {
+                toast.warning(t("apple_id.valid_6digit"));
+                return;
+              }
+              await emit("2fa-recieved", tfaCode);
+              setTfaOpen(false);
+              setTfaCode("");
+            }}
+          >
+            <input
+              type="text"
+              className="tfa-code-input"
+              maxLength={6}
+              placeholder="123456"
+              value={tfaCode}
+              onChange={(e) => setTfaCode(e.target.value.trim())}
+              autoFocus
+            />
+            <div className="tfa-actions">
+              <button type="submit" className="primary">
+                {t("apple_id.submit")}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setTfaOpen(false);
+                  setTfaCode("");
+                }}
+              >
+                {t("common.cancel")}
+              </button>
+            </div>
+          </form>
+        </div>
+      </Modal>
+
+      {/* Max Certs Modal */}
+      <Modal sizeFit isOpen={certs !== null} zIndex={2000}>
+        <div className="certs-modal-content">
+          <h3>{t("apple_id.max_certs_title")}</h3>
+          <p>{t("apple_id.max_certs_desc")}</p>
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => setChooseCertsOpen((v) => !v)}
+          >
+            {chooseCertsOpen
+              ? t("apple_id.hide_certificate_list")
+              : t("apple_id.choose_what_to_revoke")}
+          </button>
+
+          {chooseCertsOpen && certs && (
+            <div className="certs-list-box">
+              {certs.map((cert) => (
+                <label key={cert.serialNumber} className="cert-choice-item">
+                  <input
+                    type="checkbox"
+                    checked={selectedSerials.includes(cert.serialNumber)}
+                    onChange={() => {
+                      setSelectedSerials((prev) =>
+                        prev.includes(cert.serialNumber)
+                          ? prev.filter((s) => s !== cert.serialNumber)
+                          : [...prev, cert.serialNumber],
+                      );
+                    }}
+                  />
+                  <span>
+                    {cert.name} ({cert.machineName})
+                  </span>
+                </label>
+              ))}
+            </div>
+          )}
+
+          <div className="modal-btn-row">
+            <button
+              className="primary"
+              onClick={async () => {
+                await emit(
+                  "max-certs-response",
+                  selectedSerials.length > 0 ? selectedSerials : null,
+                );
+                setCerts(null);
+                setChooseCertsOpen(false);
+              }}
+            >
+              {t("apple_id.continue")}
+            </button>
+            <button
+              onClick={async () => {
+                await emit("max-certs-response", null);
+                setCerts(null);
+                setChooseCertsOpen(false);
+              }}
+            >
+              {t("common.cancel")}
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </>
+  );
+
   // Collapsed summary view
   if (isCollapsed && loggedInAs) {
     return (
-      <div className="step-card is-collapsed" onClick={onExpand} role="button" tabIndex={0}>
-        <div className="collapsed-left">
-          <div className="step-badge-done">
-            <FaCheck />
+      <>
+        <div className="step-card is-collapsed" onClick={onExpand} role="button" tabIndex={0}>
+          <div className="collapsed-left">
+            <div className="step-badge-done">
+              <FaCheck />
+            </div>
+            <span className="step-collapsed-title">
+              {t("flow.step2_badge")}. {t("flow.step2_title")}
+            </span>
           </div>
-          <span className="step-collapsed-title">
-            {t("flow.step2_badge")}. {t("flow.step2_title")}
-          </span>
-        </div>
 
-        <div className="collapsed-center">
-          <span className="detected-pill">
-            <FaUserCheck />
-            <span>{loggedInAs}</span>
-          </span>
-        </div>
+          <div className="collapsed-center">
+            <span className="detected-pill">
+              <FaUserCheck />
+              <span>{loggedInAs}</span>
+            </span>
+          </div>
 
-        <div className="collapsed-right">
-          <button
-            type="button"
-            className="btn-change"
-            onClick={(e) => {
-              e.stopPropagation();
-              onExpand();
-            }}
-          >
-            {t("flow.step2_change")}
-          </button>
+          <div className="collapsed-right">
+            <button
+              type="button"
+              className="btn-change"
+              onClick={(e) => {
+                e.stopPropagation();
+                onExpand();
+              }}
+            >
+              {t("flow.step2_change")}
+            </button>
+          </div>
         </div>
-      </div>
+        {modals}
+      </>
     );
   }
 
@@ -383,114 +499,7 @@ export const AppleID = ({
         )}
       </div>
 
-      {/* 2FA Modal */}
-      <Modal sizeFit isOpen={tfaOpen} zIndex={2000}>
-        <div className="tfa-modal-content">
-          <h3>{t("apple_id.two_factor_title")}</h3>
-          <p>{t("apple_id.two_factor_prompt")}</p>
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              if (tfaCode.length !== 6) {
-                toast.warning(t("apple_id.valid_6digit"));
-                return;
-              }
-              await emit("2fa-recieved", tfaCode);
-              setTfaOpen(false);
-              setTfaCode("");
-            }}
-          >
-            <input
-              type="text"
-              className="tfa-code-input"
-              maxLength={6}
-              placeholder="123456"
-              value={tfaCode}
-              onChange={(e) => setTfaCode(e.target.value.trim())}
-              autoFocus
-            />
-            <div className="tfa-actions">
-              <button type="submit" className="primary">
-                {t("apple_id.submit")}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setTfaOpen(false);
-                  setTfaCode("");
-                }}
-              >
-                {t("common.cancel")}
-              </button>
-            </div>
-          </form>
-        </div>
-      </Modal>
-
-      {/* Max Certs Modal */}
-      <Modal sizeFit isOpen={certs !== null} zIndex={2000}>
-        <div className="certs-modal-content">
-          <h3>{t("apple_id.max_certs_title")}</h3>
-          <p>{t("apple_id.max_certs_desc")}</p>
-          <button
-            type="button"
-            className="link-button"
-            onClick={() => setChooseCertsOpen((v) => !v)}
-          >
-            {chooseCertsOpen
-              ? t("apple_id.hide_certificate_list")
-              : t("apple_id.choose_what_to_revoke")}
-          </button>
-
-          {chooseCertsOpen && certs && (
-            <div className="certs-list-box">
-              {certs.map((cert) => (
-                <label key={cert.serialNumber} className="cert-choice-item">
-                  <input
-                    type="checkbox"
-                    checked={selectedSerials.includes(cert.serialNumber)}
-                    onChange={() => {
-                      setSelectedSerials((prev) =>
-                        prev.includes(cert.serialNumber)
-                          ? prev.filter((s) => s !== cert.serialNumber)
-                          : [...prev, cert.serialNumber],
-                      );
-                    }}
-                  />
-                  <span>
-                    {cert.name} ({cert.machineName})
-                  </span>
-                </label>
-              ))}
-            </div>
-          )}
-
-          <div className="modal-btn-row">
-            <button
-              className="primary"
-              onClick={async () => {
-                await emit(
-                  "max-certs-response",
-                  selectedSerials.length > 0 ? selectedSerials : null,
-                );
-                setCerts(null);
-                setChooseCertsOpen(false);
-              }}
-            >
-              {t("apple_id.continue")}
-            </button>
-            <button
-              onClick={async () => {
-                await emit("max-certs-response", null);
-                setCerts(null);
-                setChooseCertsOpen(false);
-              }}
-            >
-              {t("common.cancel")}
-            </button>
-          </div>
-        </div>
-      </Modal>
+      {modals}
     </div>
   );
 };

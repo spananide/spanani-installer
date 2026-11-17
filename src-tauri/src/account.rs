@@ -176,16 +176,25 @@ async fn login(
                     .emit("2fa-required", params)
                     .context("Failed to emit 2fa-required event")?;
 
-                let (tx, rx) = std::sync::mpsc::channel::<String>();
+                let (tx, rx) = tokio::sync::oneshot::channel::<String>();
+                let tx = std::sync::Arc::new(std::sync::Mutex::new(Some(tx)));
                 let handler_id = window_clone.listen("2fa-recieved", move |event| {
                     let code = event.payload();
-                    let _ = tx.send(code.to_string());
+                    if let Ok(mut guard) = tx.lock() {
+                        if let Some(sender) = guard.take() {
+                            let _ = sender.send(code.to_string());
+                        }
+                    }
                 });
 
-                let result = rx.recv_timeout(Duration::from_secs(120))?;
+                let result = tokio::time::timeout(Duration::from_secs(120), rx).await;
                 window_clone.unlisten(handler_id);
 
-                let code = result.trim_matches('"').to_string();
+                let code = result
+                    .context("2FA timeout")?
+                    .context("2FA channel closed")?;
+
+                let code = code.trim_matches('"').to_string();
                 Ok(TwoFactorCallbackResponse::SubmitCode(code))
             }
             .boxed()
@@ -237,16 +246,26 @@ async fn login(
                     .collect();
                 window_clone.emit("max-certs-reached", cert_infos)?;
 
-                let (tx, rx) = std::sync::mpsc::channel::<Option<Vec<String>>>();
+                let (tx, rx) = tokio::sync::oneshot::channel::<Option<Vec<String>>>();
+                let tx = std::sync::Arc::new(std::sync::Mutex::new(Some(tx)));
                 let handler_id = window_clone.listen("max-certs-response", move |event| {
                     let certs = event.payload();
                     let certs = serde_json::from_str::<Option<Vec<String>>>(certs).unwrap_or(None);
-                    let _ = tx.send(certs);
+                    if let Ok(mut guard) = tx.lock() {
+                        if let Some(sender) = guard.take() {
+                            let _ = sender.send(certs);
+                        }
+                    }
                 });
 
-                let result = rx.recv_timeout(Duration::from_secs(300));
+                let result = tokio::time::timeout(Duration::from_secs(300), rx).await;
                 window_clone.unlisten(handler_id);
-                Ok(result?)
+
+                let chosen = match result {
+                    Ok(Ok(value)) => value,
+                    _ => None,
+                };
+                Ok(chosen)
             })
         });
 
