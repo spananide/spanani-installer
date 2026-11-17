@@ -1,4 +1,11 @@
-use std::{path::PathBuf, sync::Mutex};
+use std::{
+    path::PathBuf,
+    sync::{
+        Mutex,
+        atomic::{AtomicUsize, Ordering::SeqCst},
+    },
+    time::Duration,
+};
 
 use crate::{
     device::{DeviceInfoMutex, get_provider, get_provider_from_connection, get_usbmuxd},
@@ -12,6 +19,8 @@ use isideload::{
 };
 use tauri::{AppHandle, Manager, State, Window};
 
+static BUSY: std::sync::atomic::AtomicUsize = AtomicUsize::new(0);
+
 pub type SideloaderMutex =
     Mutex<Option<Sideloader<MaxCertsCallbackBox, ExtensionsBehaviorCallbackBox>>>;
 
@@ -21,13 +30,28 @@ pub struct SideloaderGuard<'a> {
 }
 
 impl<'a> SideloaderGuard<'a> {
-    pub fn take(state: &'a SideloaderMutex) -> Result<Self, AppError> {
-        let mut guard = state.lock().unwrap();
-        let sideloader = guard.take().ok_or(AppError::NotLoggedIn)?;
-        Ok(Self {
-            state,
-            sideloader: Some(sideloader),
-        })
+    pub async fn take(state: &'a SideloaderMutex) -> Result<Self, AppError> {
+        for _ in 0..600 {
+            let is_busy = {
+                let mut guard = state.lock().unwrap();
+                if let Some(sideloader) = guard.take() {
+                    BUSY.fetch_add(1, SeqCst);
+                    return Ok(Self {
+                        state,
+                        sideloader: Some(sideloader),
+                    });
+                }
+                BUSY.load(SeqCst) > 0
+            };
+
+            if !is_busy {
+                return Err(AppError::NotLoggedIn);
+            }
+
+            tokio::time::sleep(Duration::from_millis(100)).await;
+        }
+
+        Err(AppError::NotLoggedIn)
     }
 
     pub fn get_mut(
@@ -43,6 +67,7 @@ impl Drop for SideloaderGuard<'_> {
     fn drop(&mut self) {
         let mut guard = self.state.lock().unwrap();
         *guard = self.sideloader.take();
+        BUSY.fetch_sub(1, SeqCst);
     }
 }
 
@@ -61,7 +86,7 @@ pub async fn sideload(
 
     let provider = get_provider(&device.info).await?;
 
-    let mut sideloader = SideloaderGuard::take(&sideloader_state)?;
+    let mut sideloader = SideloaderGuard::take(&sideloader_state).await?;
 
     let special = sideloader
         .get_mut()

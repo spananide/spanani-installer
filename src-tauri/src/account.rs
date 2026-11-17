@@ -280,7 +280,7 @@ pub struct CertificateInfo {
 pub async fn get_certificates(
     sideloader_state: State<'_, SideloaderMutex>,
 ) -> Result<Vec<CertificateInfo>, AppError> {
-    let mut sideloader = SideloaderGuard::take(&sideloader_state)?;
+    let mut sideloader = SideloaderGuard::take(&sideloader_state).await?;
 
     let team = sideloader.get_mut().get_team().await?;
     let dev_session = sideloader.get_mut().get_dev_session();
@@ -304,7 +304,7 @@ pub async fn revoke_certificate(
     serial_number: String,
     sideloader_state: State<'_, SideloaderMutex>,
 ) -> Result<(), AppError> {
-    let mut sideloader = SideloaderGuard::take(&sideloader_state)?;
+    let mut sideloader = SideloaderGuard::take(&sideloader_state).await?;
 
     let team = sideloader.get_mut().get_team().await?;
     let dev_session = sideloader.get_mut().get_dev_session();
@@ -320,7 +320,7 @@ pub async fn revoke_certificate(
 pub async fn list_app_ids(
     sideloader_state: State<'_, SideloaderMutex>,
 ) -> Result<ListAppIdsResponse, AppError> {
-    let mut sideloader = SideloaderGuard::take(&sideloader_state)?;
+    let mut sideloader = SideloaderGuard::take(&sideloader_state).await?;
 
     let team = sideloader.get_mut().get_team().await?;
     let dev_session = sideloader.get_mut().get_dev_session();
@@ -335,7 +335,7 @@ pub async fn delete_app_id(
     app_id_id: String,
     sideloader_state: State<'_, SideloaderMutex>,
 ) -> Result<(), AppError> {
-    let mut sideloader = SideloaderGuard::take(&sideloader_state)?;
+    let mut sideloader = SideloaderGuard::take(&sideloader_state).await?;
 
     let team = sideloader.get_mut().get_team().await?;
     let dev_session = sideloader.get_mut().get_dev_session();

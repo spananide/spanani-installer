@@ -26,10 +26,15 @@ export const Certificates = () => {
     const promise = async () => {
       loadingRef.current = true;
       setLoading(true);
-      let certs = await invoke<Certificate[]>("get_certificates");
-      setCertificates(certs);
-      setLoading(false);
-      loadingRef.current = false;
+      try {
+        let certs = await invoke<Certificate[]>("get_certificates");
+        setCertificates(certs);
+      } catch (e) {
+        throw e;
+      } finally {
+        setLoading(false);
+        loadingRef.current = false;
+      }
     };
     toast.promise(promise, {
       loading: t("certificates.loading"),
