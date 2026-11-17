@@ -62,6 +62,7 @@ i18n
   .init({
     lng: "en",
     fallbackLng: "en",
+    detection: { order: [], caches: [] },
     interpolation: {
       escapeValue: false,
     },
