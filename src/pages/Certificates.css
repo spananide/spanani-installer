@@ -26,8 +26,8 @@
 }
 
 .hint-banner.warning {
-  background: var(--warning-bg);
-  border: 1px solid var(--warning-border);
+  background: var(--paper-raised);
+  border: 1px solid var(--border);
   color: var(--warning);
 }
 
@@ -56,7 +56,7 @@
 }
 
 .certificate-table th {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--paper-raised);
   color: var(--ink-soft);
   font-weight: 600;
   border-bottom: 1px solid var(--border);
@@ -97,13 +97,4 @@
 
 .spin {
   animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }

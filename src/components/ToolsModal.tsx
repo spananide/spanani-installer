@@ -91,7 +91,7 @@ export const ToolsModal = ({
       await startOperation(sideloadOperation, { appPath: path as string });
     } catch (e) {
       console.error(e);
-      toast.error("Fehler beim Öffnen der Datei");
+      toast.error("Could not open the file");
     }
   };
 
@@ -249,7 +249,7 @@ export const ToolsModal = ({
                     <div className="installer-row">
                       <div className="installer-info">
                         <strong>{t("app.sidestore_nightly")}</strong>
-                        <span>Nightly Build mit neuesten Änderungen</span>
+                        <span>Nightly build with the latest changes</span>
                       </div>
                       <button
                         className="btn-sm"

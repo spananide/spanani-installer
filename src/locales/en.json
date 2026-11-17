@@ -45,7 +45,10 @@
     "must_select_device": "You must select a device first.",
     "ipa_files": "IPA Files",
     "logo_alt": "spanani logo",
-    "install": "Install"
+    "install": "Install",
+    "drop_ipa_title": "Drop an .ipa to install it",
+    "drop_ipa_hint": "It is installed on the selected iPhone with your Apple ID.",
+    "drop_ipa_only": "Only .ipa files can be installed."
   },
   "apple_id": {
     "title": "Apple ID",
@@ -94,7 +97,8 @@
     "pairing_in_progress_header": "Pairing with {{device}}...",
     "pairing_in_progress_hint": "Please unlock your device and tap \"Trust\", then enter your passcode if prompted.",
     "pairing_cancel": "Cancel",
-    "failed_select": "Failed to select device"
+    "failed_select": "Failed to select device",
+    "failed_select_prefix": "Could not select the device: "
   },
   "operation": {
     "failed": "Operation failed.",
@@ -219,11 +223,13 @@
         "Your Apple ID may be below the required age to use developer services."
       ],
       "account_locked": [
-        "This usually occurs after multiple failed sign in attempts. Visit ((link:https://iforgot.apple.com/)) to unlock your account."
+        "This usually occurs after multiple failed sign in attempts. Visit ((link:https://iforgot.apple.com/)) to unlock your account.",
+        "Visit ((link:https://iforgot.apple.com/)) to unlock your account."
       ],
       "auth": [
         "Make sure your credentials are correct and try again.",
-        "Security key 2FA is not supported. Use an Apple ID with standard trusted device 2FA."
+        "Security key 2FA is not supported. Use an Apple ID with standard trusted device 2FA.",
+        "Security-key 2FA is not supported. Use normal 2FA on a trusted device."
       ],
       "download": [
         "Download failed. Please check your internet connection."
@@ -233,12 +239,14 @@
       ],
       "pairing": [
         "Try reconnecting the device with a cable.",
-        "Ensure your device has a passcode set and is unlocked."
+        "Ensure your device has a passcode set and is unlocked.",
+        "Use a USB cable instead of Wi-Fi."
       ],
       "canceled": [],
       "operation_update": [],
       "usbmuxd": [
         "[platform::windows]Install iTunes directly from apple.com (not from the Microsoft Store).",
+        "[platform::linux]Make sure usbmuxd is installed and running.",
         "[platform::linux]Make sure usbmuxd is installed and running."
       ],
       "trust": [
@@ -248,11 +256,16 @@
         "Ensure your device is properly connected with a cable.",
         "Unplug and reconnect the device. Try a different USB port or cable."
       ],
-      "not_logged_in": ["Sign in with your Apple ID first."],
-      "no_device_selected": ["Select a device before continuing."],
+      "not_logged_in": [
+        "Sign in with your Apple ID first."
+      ],
+      "no_device_selected": [
+        "Select a device before continuing."
+      ],
       "anisette": [
         "Ensure your computer is connected to the internet.",
-        "Change your anisette server in Tools."
+        "Change your anisette server in Tools.",
+        "Check that ((link:{{anisetteServerUrl}})) is reachable."
       ],
       "keyring": [
         "Try enabling \"Do not use keyring\" in Settings if this issue persists."
@@ -322,7 +335,28 @@
     "btn_continue": "Continue",
     "btn_install": "Install spanani Store",
     "btn_installing": "Installing...",
-    "btn_done": "Done"
+    "btn_done": "Done",
+    "step1_subtitle": "Connect your iPhone with a cable, unlock it and trust this computer",
+    "step1_driver_warning_title": "Apple device driver missing?",
+    "step1_driver_warning_desc": "Install iTunes from apple.com (not the Microsoft Store).",
+    "step1_download_itunes": "Get iTunes from apple.com",
+    "step1_rescan": "Scan again",
+    "step1_no_device": "No device found",
+    "step1_pairing": "Pairing...",
+    "step2_subtitle": "Sign in with your Apple ID",
+    "step2_logged_in_as": "Signed in as",
+    "step2_stored_logins": "Saved accounts",
+    "step2_login_button": "Sign In",
+    "step2_require_device_first": "Select a device first.",
+    "step3_subtitle": "Set up spanani Store on your iPhone",
+    "step3_install_button": "Install spanani Store",
+    "step3_disabled_hint": "Finish step 1 (Device) and step 2 (Apple ID) first.",
+    "step3_ready_hint": "Ready to install on {{device}}",
+    "step3_running": "Installing...",
+    "step3_success_subtitle": "spanani Store is installed on your iPhone.",
+    "step3_next_steps_title": "Next steps on the iPhone:",
+    "step3_done_button": "Done",
+    "step3_retry_button": "Try again"
   },
   "tools": {
     "title": "Tools",
@@ -349,6 +383,19 @@
     "sidestore_stable_desc": "Standard SideStore release",
     "sidestore_nightly_desc": "Nightly build with latest updates",
     "livecontainer_stable_desc": "LiveContainer + SideStore release",
-    "livecontainer_nightly_desc": "LiveContainer + SideStore nightly"
+    "livecontainer_nightly_desc": "LiveContainer + SideStore nightly",
+    "tab_sideload": "Own IPA",
+    "tab_pairing": "Pairing",
+    "tab_certificates": "Certificates",
+    "tab_appids": "App IDs",
+    "tab_settings": "Settings",
+    "tab_more_installers": "More installers",
+    "tab_about": "About",
+    "sideload_title": "Install your own IPA",
+    "sideload_desc": "Pick an .ipa file to sign it and install it directly on your device.",
+    "sideload_select_file": "Choose IPA file...",
+    "sideload_device_login_required": "Select a device and sign in with your Apple ID first.",
+    "certificates_hint": "At the limit: revoke the oldest certificate",
+    "footer_about": "About spanani Installer"
   }
 }

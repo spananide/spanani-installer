@@ -356,7 +356,7 @@ export const Device = ({
           <div className="pairing-spinner" />
           <h3>
             {t("device.pairing_in_progress_header", {
-              device: waitingToPair?.name ?? "Gerät",
+              device: waitingToPair?.name ?? "device",
             })}
           </h3>
           <p>{t("device.pairing_in_progress_hint")}</p>

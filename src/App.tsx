@@ -5,6 +5,7 @@ import { AppleID } from "./AppleID";
 import { Device, DeviceInfo } from "./Device";
 import { invoke } from "@tauri-apps/api/core";
 import { getVersion } from "@tauri-apps/api/app";
+import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { listen } from "@tauri-apps/api/event";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -12,6 +13,7 @@ import { openUrl } from "@tauri-apps/plugin-opener";
 import { usePlatform } from "./PlatformContext";
 import {
   installSpananiStoreOperation,
+  sideloadOperation,
   Operation,
   OperationState,
   OperationUpdate,
@@ -22,7 +24,8 @@ import { AboutModal } from "./components/AboutModal";
 import { checkForUpdates } from "./update";
 import { ErrorVariant, getErrorSuggestions, parseLinkToken } from "./errors";
 import { useStore } from "./StoreContext";
-import markLogo from "./assets/mark.png";
+import mark3d from "./assets/mark3d.png";
+import banner3d from "./assets/banner3d.png";
 import {
   FaGear,
   FaCheck,
@@ -45,6 +48,7 @@ export default function App() {
   const [stepOverride, setStepOverride] = useState<number | null>(null);
   const [isToolsOpen, setIsToolsOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [noKeyringAvailable, setNoKeyringAvailable] = useState<boolean>(false);
   const [anisetteServer] = useStore<string>(
     "anisetteServer3-1",
@@ -192,6 +196,73 @@ export default function App() {
         operationState.completed.length + operationState.failed.length) ||
       operationState.completed.length === operationState.current.steps.length);
 
+  const dragDropStateRef = useRef({
+    selectedDevice,
+    loggedInAs,
+    operationState,
+    opDone,
+  });
+
+  useEffect(() => {
+    dragDropStateRef.current = {
+      selectedDevice,
+      loggedInAs,
+      operationState,
+      opDone,
+    };
+  });
+
+  useEffect(() => {
+    if (!("__TAURI_INTERNALS__" in window)) return;
+    let unlisten: (() => void) | undefined;
+    let isMounted = true;
+
+    getCurrentWebview()
+      .onDragDropEvent((event) => {
+        const payload = event.payload;
+        if (payload.type === "enter" || payload.type === "over") {
+          setIsDragging(true);
+        } else if (payload.type === "leave") {
+          setIsDragging(false);
+        } else if (payload.type === "drop") {
+          setIsDragging(false);
+          const paths = payload.paths;
+          const ipaPath = paths.find((p) => p.toLowerCase().endsWith(".ipa"));
+          if (!ipaPath) {
+            toast.error(t("app.drop_ipa_only"));
+            return;
+          }
+          const state = dragDropStateRef.current;
+          if (!state.selectedDevice) {
+            toast.error(t("app.must_select_device"));
+            setStepOverride(1);
+            return;
+          }
+          if (!state.loggedInAs) {
+            toast.error(t("app.must_be_logged_in"));
+            setStepOverride(2);
+            return;
+          }
+          if (state.operationState !== null && !state.opDone) {
+            return;
+          }
+          startOperation(sideloadOperation, { appPath: ipaPath }).catch(console.error);
+        }
+      })
+      .then((unlistenFn) => {
+        if (isMounted) {
+          unlisten = unlistenFn;
+        } else {
+          unlistenFn();
+        }
+      });
+
+    return () => {
+      isMounted = false;
+      if (unlisten) unlisten();
+    };
+  }, [startOperation, t]);
+
   const getSuggestions = useCallback(
     (type: ErrorVariant): string[] => {
       return getErrorSuggestions(t, type, platform, anisetteServer);
@@ -222,14 +293,11 @@ export default function App() {
 
   return (
     <div className="app-layout">
-      {/* Background radial glow behind hero */}
-      <div className="hero-glow" aria-hidden="true" />
-
       {/* Top Bar */}
       <header className="top-bar">
         <div className="brand-group">
           <div className="brand-chip">
-            <img src={markLogo} alt="spanani" className="brand-mark-img" />
+            <img src={mark3d} alt="spanani" className="brand-mark-img" />
           </div>
           <div className="brand-wordmark">
             <span className="brand-name">spanani</span>
@@ -252,6 +320,10 @@ export default function App() {
 
       {/* Main Guided Flow Stepper */}
       <main className="main-content">
+        <div className="hero-art">
+          <img src={banner3d} alt="" />
+        </div>
+
         <div className="stepper-bar">
           <div
             className={`step-indicator${selectedDevice ? " completed" : activeStep === 1 ? " active" : ""}`}
@@ -308,7 +380,7 @@ export default function App() {
 
         {/* Guided Cards Container */}
         <div className="steps-flow-container">
-          {/* Step 1: Gerät */}
+          {/* Step 1: Device */}
           <Device
             selectedDevice={selectedDevice}
             setSelectedDevice={setSelectedDevice}
@@ -570,6 +642,15 @@ export default function App() {
           operationState={operationState}
           closeMenu={() => setOperationState(null)}
         />
+      )}
+
+      {isDragging && (
+        <div className="drop-overlay" aria-hidden="true">
+          <div className="drop-overlay-panel">
+            <strong>{t("app.drop_ipa_title")}</strong>
+            <span>{t("app.drop_ipa_hint")}</span>
+          </div>
+        </div>
       )}
     </div>
   );

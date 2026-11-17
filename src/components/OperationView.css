@@ -90,8 +90,8 @@
 }
 
 .op-error-pre {
-  background: rgba(255, 122, 136, 0.1);
-  border: 1px solid var(--danger-border);
+  background: var(--paper-raised);
+  border: 1px solid var(--border);
   color: var(--danger);
   font-family: var(--font-mono);
   font-size: 12px;
@@ -108,8 +108,8 @@
 }
 
 .op-success-banner {
-  background: var(--success-bg);
-  border: 1px solid var(--success-border);
+  background: var(--paper-raised);
+  border: 1px solid var(--border);
   color: var(--success);
   padding: 12px 16px;
   border-radius: var(--radius-inner);
@@ -147,8 +147,4 @@
 .op-support-hint {
   font-size: 12px;
   color: var(--ink-faint);
-}
-
-.op-action-btn {
-  width: 100%;
 }

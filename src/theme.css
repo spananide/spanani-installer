@@ -1,23 +1,7 @@
 @font-face {
   font-family: "Bricolage Grotesque";
-  src: url("/BricolageGrotesque-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Bricolage Grotesque";
-  src: url("/BricolageGrotesque-SemiBold.ttf") format("truetype");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Bricolage Grotesque";
-  src: url("/BricolageGrotesque-ExtraBold.ttf") format("truetype");
-  font-weight: 800;
+  src: url("/fonts/bricolage-grotesque-var.woff2") format("woff2");
+  font-weight: 200 800;
   font-style: normal;
   font-display: swap;
 }
@@ -32,24 +16,22 @@
   --brand: #9955e7;
   --brand-hover: #aa68fa;
   --brand-active: #853ddb;
-  --brand-glow: rgba(153, 85, 231, 0.28);
   --accent: #b892f2;
-  --accent-glow: rgba(184, 146, 242, 0.35);
   --success: #4fd69c;
-  --success-bg: rgba(79, 214, 156, 0.12);
-  --success-border: rgba(79, 214, 156, 0.28);
+  --success-bg: var(--paper-raised);
+  --success-border: var(--border);
   --danger: #ff7a88;
-  --danger-bg: rgba(255, 122, 136, 0.12);
-  --danger-border: rgba(255, 122, 136, 0.28);
+  --danger-bg: var(--paper-raised);
+  --danger-border: var(--border);
   --warning: #ffc65a;
-  --warning-bg: rgba(255, 198, 90, 0.12);
-  --warning-border: rgba(255, 198, 90, 0.32);
+  --warning-bg: var(--paper-raised);
+  --warning-border: var(--border);
   --border: rgba(255, 255, 255, 0.08);
   --border-subtle: rgba(255, 255, 255, 0.04);
   --border-hover: rgba(255, 255, 255, 0.16);
-  --radius-card: 24px;
-  --radius-inner: 16px;
-  --radius-btn: 14px;
+  --radius-card: 20px;
+  --radius-inner: 12px;
+  --radius-btn: 12px;
   --radius-pill: 9999px;
   --font-title: "Bricolage Grotesque", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -95,7 +77,8 @@ button {
   color: var(--ink);
   border-radius: var(--radius-btn);
   padding: 8px 16px;
-  transition: all 0.15s ease;
+  min-height: 32px;
+  transition: border-color 0.15s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -104,11 +87,10 @@ button {
 
 button:hover:not(:disabled) {
   border-color: var(--border-hover);
-  background: rgba(255, 255, 255, 0.05);
 }
 
 button:active:not(:disabled) {
-  transform: translateY(1px);
+  transform: translate(2px, 2px);
 }
 
 button:disabled {
@@ -117,31 +99,39 @@ button:disabled {
 }
 
 button.primary {
-  background: linear-gradient(135deg, var(--brand), #7c3aed);
-  border-color: transparent;
+  background: var(--brand);
+  border: 1px solid var(--brand);
   color: #ffffff;
   font-weight: 600;
-  box-shadow: 0 4px 16px var(--brand-glow);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
+  transition: transform 150ms ease, box-shadow 150ms ease;
 }
 
 button.primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--brand-hover), #8b4bf0);
-  box-shadow: 0 6px 20px rgba(153, 85, 231, 0.4);
+  background: var(--brand-hover);
+  border-color: var(--brand-hover);
 }
 
 button.primary:active:not(:disabled) {
-  background: linear-gradient(135deg, var(--brand-active), #6f2ed6);
+  background: var(--brand-active);
+  border-color: var(--brand-active);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
 }
 
 button.danger {
   background: var(--danger-bg);
-  border-color: var(--danger-border);
+  border: 1px solid var(--border);
   color: var(--danger);
+  transition: border-color 0.15s ease;
 }
 
 button.danger:hover:not(:disabled) {
-  background: rgba(255, 122, 136, 0.2);
   border-color: var(--danger);
+}
+
+button.danger:active:not(:disabled) {
+  transform: translate(2px, 2px);
 }
 
 button:focus-visible,
@@ -162,14 +152,16 @@ input[type="password"] {
   font-family: inherit;
   font-size: 14px;
   padding: 10px 14px;
+  min-height: 36px;
   width: 100%;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 input[type="text"]:focus,
 input[type="password"]:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 input::placeholder {
@@ -187,7 +179,7 @@ input::placeholder {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--border);
   border-radius: var(--radius-pill);
 }
 
