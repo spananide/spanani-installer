@@ -1,156 +1,94 @@
-<a href="https://iloader.app">
-  <picture align="left" >
-    <source media="(prefers-color-scheme: dark)" srcset="/iloader.svg">
-    <img align="left" width="90" height="90" src="/iloader-dark.svg">
-  </picture>
-  
-  <div id="user-content-toc">
-    <ul style="list-style: none;">
-      <summary>
-        <h1>iloader</h1>
-      </summary>
-    </ul>
-  </div>
-</a>
+<p align="center">
+  <img src="docs/banner.png" alt="spanani Installer" width="100%"><br><br>
+  <strong>Put spanani Store on your iPhone in three steps.</strong><br>
+  A small Windows desktop app that installs <a href="https://github.com/spananide/spanani-store">spanani Store</a> on your iPhone in three guided steps.<br><br>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-9955E7?style=flat-square" alt="License MIT"></a>
+  <a href="https://github.com/spananide/spanani-installer/releases"><img src="https://img.shields.io/github/v/release/spananide/spanani-installer?color=9955E7&style=flat-square" alt="Latest Release"></a>
+  <img src="https://img.shields.io/badge/Platform-Windows-9955E7?style=flat-square" alt="Platform Windows">
+</p>
 
----
+## How it works
 
-[![Build iloader](https://img.shields.io/github/actions/workflow/status/nab138/iloader/build.yml?style=flat&logo=github&logoColor=white&label=Build%20iloader)](https://github.com/nab138/iloader/actions/workflows/build.yml) ![Downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fnab138%2F28258aff7e3f1d3a3084a21f4cff2e57%2Fraw%2Filoader_downloads.json&style=flat)
-[![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/nab138)
+1. **Device**: Connect your iPhone via USB and let the installer detect it.
+2. **Apple ID**: Sign in with your free Apple ID.
+3. **Install**: The app downloads the latest spanani Store release, signs it with your certificate, installs it, and places the pairing file inside the app with live progress.
 
-Install SideStore (or other apps) and import your pairing file with ease
-
-**This repository and [iloader.app](https://iloader.app) are the only official ways to download iloader. There is also an unofficial [Homebrew cask](https://formulae.brew.sh/cask/iloader), an unofficial [AUR package](https://aur.archlinux.org/packages/iloader-bin), and an unofficial [Fedora COPR repository](https://copr.fedorainfracloud.org/coprs/anudeepd/iloader) maintained by the community. Do not download from any other sources or websites.**
-
-<img width="1918" height="998" alt="iloader0" src="https://github.com/user-attachments/assets/93cd135d-6d89-46ee-9b9f-12c596806911" />
-
-## How to use
-
-- Install usbmuxd for your platform
-  - Windows: [iTunes](https://apple.co/ms)
-  - macOS: Included
-  - Linux: Potentially included, if not, install via your package manager
-- Install the latest version for your platform from the [releases](https://github.com/nab138/iloader/releases)
-  - NixOS: Install [`iloader`](https://search.nixos.org/packages?channel=unstable&query=iloader) from nixpkgs-unstable, or use the flake `github:nab138/iloader`
-  - Fedora: Use the .RPM or the unofficial [Fedora COPR repository](https://copr.fedorainfracloud.org/coprs/anudeepd/iloader)
-  - Arch: Use the unofficial [AUR package](https://aur.archlinux.org/packages/iloader-bin),
-- Plug in your iDevice to your computer
-- Open the app
-- Sign into your Apple ID
-- Select your action (e.g. install SideStore)
+| <img src="docs/installer-ready.png" alt="Device ready" width="48%"> | <img src="docs/installer-apple.png" alt="Apple ID sign in" width="48%"> |
+| :-: | :-: |
+| <img src="docs/installer-installing.png" alt="Installing" width="48%"> | <img src="docs/installer-done.png" alt="Installation finished" width="48%"> |
 
 ## Features
 
-- Install SideStore (or LiveContainer + SideStore), import certificate and place rppairing+lockdown pairing files automatically
-- Import any IPA
-- Intelligent error suggestions to help resolve common issues
-- Manage pairing files in apps like StikDebug, SideStore, Protokolle, etc
-- See and revoke development certificates & app ids
+- **Guided store installation**: Downloads the latest spanani Store release, signs it with your certificate, installs it, and places the pairing file inside the app so the store can talk to the phone.
+- **Live progress**: Shows real-time progress for each step.
+- **Install any IPA**: Sideload any `.ipa` via the Tools button or by dragging an `.ipa` directly onto the window.
+- **Certificate manager**: Manage certificates and revoke old ones when Apple's certificate limit is reached.
+- **Pairing file export**: Export pairing files for use in other apps.
+- **App ID list**: View registered App IDs.
+- **Settings**: Configure language, remote anisette server, and logs.
+- **Secure credentials**: Apple ID passwords are stored in the Windows Credential Manager (keyring) and only sent to Apple.
 
-## Troubleshooting
+## Download and install
 
-- If you are unable to solve an issue on your own, copy the full error message and ask on the [idevice Discord server](https://discord.gg/EA6yVgydBz) or [open an issue](https://github.com/nab138/iloader/issues).
-- You can view app logs with the "View Logs." If nothing is showing up, change the log level to "Debug."
-- If those logs aren't helpful, logs with additional are stored in the following locations:
-  - Windows: `%APPDATA%\me.nabdev.iloader\logs`
-  - macOS: `~/Library/Application Support/me.nabdev.iloader/logs`
-  - Linux: `~/.local/share/me.nabdev.iloader/logs/`
+Requirements: Windows 10/11 x64, iTunes from apple.com (not the Microsoft Store) for the Apple device driver, an iPhone with a USB cable, and a free Apple ID.
 
-## Translating
+1. Download the latest `spanani-installer-setup.exe` from the [Releases](https://github.com/spananide/spanani-installer/releases) page.
+2. Run the installer. Since it is not code-signed, Windows SmartScreen may warn: click **More info** and then **Run anyway**.
+3. Connect your iPhone via USB, sign in with your Apple ID, and click **Install**.
+4. After the installer finishes, open **Settings > General > VPN & Device Management** on your iPhone and trust your Apple ID.
+5. Install **LocalDevVPN** from the App Store and turn it on.
+6. Open **spanani Store**.
 
-iloader needs localization! If you speak another language and notice iloader does not support it or has mistakes, please consider contributing.
+## FAQ
 
-To update/edit an existing language, make a PR modifying `src/locales/<lang>.json`.
+<details>
+<summary>Windows SmartScreen warning?</summary>
+The Windows installer is a normal setup .exe that is not code-signed. Click "More info" and then "Run anyway" to proceed.
+</details>
 
-To add a new language, add your language to `src/i18next.ts`, and in `src/locales` copy `en.json` to a new file titled `<langcode>.json` and update the strings.
+<details>
+<summary>Why do I need iTunes?</summary>
+iTunes from apple.com provides the Apple device driver required for Windows to communicate with your iPhone. The Microsoft Store version does not include this driver.
+</details>
 
-**i18next.ts:**
+<details>
+<summary>Certificate limit reached?</summary>
+When Apple reports "maximum number of certificates", a dialog asks which old certificate to revoke, then continues.
+</details>
 
-```ts
-const languages = [
-  ["en", "English"],
-  ["es", "Español"],
-  // Your language here...
-] as const;
+<details>
+<summary>Is it safe?</summary>
+spanani Installer is open source. Your Apple ID password is stored in the Windows Credential Manager (keyring) and only sent to Apple. Anisette data comes from a remote anisette server configured in Settings.
+</details>
+
+## Build from source
+
+Requirements: Bun, Rust (stable), and MSVC build tools.
+
+```bash
+bun i
+bunx tauri build
 ```
 
-You can also add your name to the translators section of the README.
+For UI development without a device:
+```bash
+VITE_MOCK=1 npx vite --port 1420
+```
+Open `http://localhost:1420/?state=ready` (other states: `apple`, `installing`, `done`, `error`, `tools`).
 
-Thank you for translating!
+CI: The `Build` workflow produces the Windows installer artifact.
 
-## Building from source
+## Credits and licence
 
-1. Install [bun](https://bun.sh) (or [Node.js](https://nodejs.org)) and [Rust](https://www.rust-lang.org/tools/install)
-2. Clone the repository and `cd` into it
-3. Run `bun i` (or `npm i`)
+spanani Installer is a fork of [iloader](https://github.com/nab138/iloader) by [nab138](https://github.com/nab138) (MIT) with its own interface and a one-click flow for [spanani Store](https://github.com/spananide/spanani-store).
 
-For development with hot reload: `bun tauri dev` (or `npm run tauri dev`)
-Make a production build: `bun tauri build` (or `npm run tauri build`)
+- Fork of [iloader](https://github.com/nab138/iloader) by [nab138](https://github.com/nab138) (MIT)
+- Uses the `isideload` and `idevice` crates
+- Font: Bricolage Grotesque (SIL OFL)
+- Built with Tauri v2, React, and Rust
 
-## Credits
+Licence: MIT (see [LICENSE](LICENSE)). Upstream branding terms are in [LICENSE-BRANDING](LICENSE-BRANDING).
 
-- Icon made by [Transistor](https://github.com/transistor-exe)
-- UI improved by [StephenDev0](https://github.com/StephenDev0)
-- [idevice](https://github.com/jkcoxson/idevice) by [jkcoxson](https://github.com/jkcoxson) for communicating with iOS devices
-- [isideload](https://github.com/nab138/isideload) for installing apps
-  - [idevice](https://github.com/jkcoxson/idevice) by [jkcoxson](https://github.com/jkcoxson) crate is used to communicate with the device
-  - [apple-codesign-quick](https://github.com/Dadoum/apple-codesign-quick) by [Dadoum](https://github.com/Dadoum) for codesigning and entitlements
-  - [Impactor](https://github.com/claration/Impactor) by [claration](https://github.com/claration) was used as a reference for cryptography operations (converting certs to p12, etc.).
-  - [Sideloader](https://github.com/Dadoum/Sideloader) by [Dadoum](https://github.com/Dadoum) was used as a reference for how apple private developer endpoints work
-- [idevice_pair](https://github.com/jkcoxson/idevice_pair) was used as a reference for pairing file management
-- App made with [tauri](https://tauri.app)
+## Disclaimer
 
-## Translators
-
-Thank you to everyone who has contributed translations! See the [Translating](#translating) section if you would like to contribute as well.
-
-- [By3lish](https://github.com/by3lish): Azerbaijani (az)
-- [TNT-333](https://github.com/TNT-333): German (de)
-- [basketshoe](https://github.com/basketshoe): Italian (it)
-- [baocreata](https://github.com/baocreata): Vietnamese (vt)
-- [IamArayel](https://github.com/IamArayel): French (fr)
-- [kkula9999](https://github.com/kkula9999): Traditional & Simplified Chinese (zh_tw & zh_cn)
-- [sibwaze](https://github.com/sibwaze): Russian (ru)
-- [notmalicik](https://github.com/notmalicik): Română (ro)
-- [mirdukkkkk](https://github.com/mirdukkkkk): Improved Russian (ru)
-- [okinaau](https://github.com/okinaau): Arabic (ar)
-- [ChouChiu](https://github.com/ChouChiu): Cantonese (zh_hk) & Improved Chinese (zh_tw & zh_cn)
-- [marcinmajsc](https://github.com/marcinmajsc): Polish (pl)
-- [ern775](https://github.com/ern775): Turkish (tr)
-- [canpng](https://github.com/canpng): Improved Turkish (tr)
-- [jazoppix](https://github.com/jazoppix): Spanish (es)
-- [eseiker](https://github.com/eseiker): Korean (ko)
-- [seomin0610](https://github.com/seomin0610): Improved Korean (ko)
-- [Ordyan777](https://github.com/Ordyan777): Armenian (am)
-- [kakik0u](https://github.com/kakik0u): Japanese (ja)
-- [lkspodmol](https://github.com/lkspodmol): Czech (cs_cz)
-- [marcusherelammonstyle-cmd](https://github.com/marcusherelammonstyle-cmd): Swedish (sv)
-- [MCI49312](https://github.com/MCI49312): Hungarian (hu)
-- [Kynonim](https://github.com/Kynonim): Indonesian (id)
-- [DD00031](https://github.com/DD00031): Dutch (nl)
-- [Toritan123](https://github.com/Toritan123): Improved Japanese (ja)
-- [marcinmajsc](https://github.com/marcinmajsc): Improved Polish (pl)
-- [dleiferives](https://github.com/dleiferives): Greek (el)
-- [ShadowWLX](https://github.com/ShadowWLX): Improved French (fr)
-- [fkpcomposer](https://github.com/fkpcomposer): Brazilian Portuguese (pt_br)
-- [474FrediFred](https://github.com/474FrediFred): Swiss German (de_ch)
-- [bovae](https://github.com/bovae) & [b1twalker](https://github.com/b1twalker): Ukranian (uk)
-- [SabaZhvania](https://github.com/SabaZhvania): Georgian (ge)
-
-## License
-
-Copyright (C) 2026 nab138
-
-The source code of this repository is licensed under the MIT License. See the [LICENSE](/LICENSE) file for the full text.
-
-Branding, logos, media assets, and the name “iloader” are not licensed under the MIT License and are subject to separate restrictions.
-
-You may retain or use branding materials in forks, tutorials, or documentation if you include a clear link to either the official site (https://iloader.app) or the iloader source code repository (https://github.com/nab138/iloader) and do not imply official endorsement. See [LICENSE-BRANDING](/LICENSE-BRANDING) for full details.
-
-## Contributing
-
-Please read our [Contributing](/CONTRIBUTING.md) policy before making a contribution.
-
-## Future Plans
-
-iloader is currently being overhauled, see the [trello board](https://trello.com/b/hAe1LHTj/iloader) for more info!
+Not affiliated with Apple or FMHY. Sideloading uses your own Apple ID at your own risk.
