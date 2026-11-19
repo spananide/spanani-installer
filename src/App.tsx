@@ -94,7 +94,7 @@ export default function App() {
         setVersion(v);
       } catch (e) {
         console.error("Failed to get version:", e);
-        setVersion("2.4.1");
+        setVersion("2.4.2");
       }
     };
     fetchVersion();
