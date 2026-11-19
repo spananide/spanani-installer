@@ -196,8 +196,7 @@
     "deleting_stored_rppairing": "Apagando pareamento armazenado...",
     "stored_rppairing_deleted_success": "Pareamento armazenado apagado com sucesso!",
     "failed_delete_stored_rppairing": "Pareamento armazenado não foi apagado",
-    "dont_use_keyring": "Não usar keyrinng",
-    "dont_use_keyring_message": "Isso deixa spanani Installer menos seguro armazenando pareamentos, estados anisette, e certificados no seu computador. Apenas ative se o armazenamento keyring não está funcionando e você compreende os riscos."
+    "dont_use_keyring": "Não usar keyrinng"
   },
   "dialog": {
     "confirm": "Confirmar",

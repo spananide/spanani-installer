@@ -24,7 +24,7 @@ use crate::{
         delete_stored_rppairing, export_pairing_cmd, has_stored_rppairing, installed_pairing_apps,
         place_pairing_cmd,
     },
-    secure_storage::{force_disable_keyring, keyring_available},
+    secure_storage::{force_disable_keyring, keyring_available, remove_insecure_storage},
     sideload::{
         SideloaderMutex, install_sidestore_operation, install_spanani_store_operation,
         sideload_operation,
@@ -70,6 +70,8 @@ pub fn run() {
                 .with(file_layer)
                 .with(frontend_layer)
                 .init();
+
+            remove_insecure_storage(app.handle());
 
             std::panic::set_hook(Box::new(|panic_info| {
                 let thread = std::thread::current();

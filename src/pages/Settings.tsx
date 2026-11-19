@@ -12,7 +12,7 @@ import { useDialog } from "../DialogContext";
 import { useTranslation } from "react-i18next";
 import i18n, { sortedLanguages } from "../i18next";
 import { DeviceInfo } from "../Device";
-import { FaCopy, FaTrashCan, FaArrowsRotate } from "react-icons/fa6";
+import { FaCopy, FaTrashCan } from "react-icons/fa6";
 
 type SettingsProps = {
   ensureSelectedDevice: () => boolean;
@@ -22,12 +22,6 @@ type SettingsProps = {
   checkKeyring: () => Promise<void>;
 };
 
-const anisetteServers = [
-  ["mac-ani.jkcoxson.com", "Jkcoxson (Standard)"],
-  ["new.ani.sidestore.io", "SideStore (.io)"],
-  ["ani3.stikstore.app", "StikStore"],
-];
-
 export const Settings = ({
   ensureSelectedDevice,
   setSelectedDevice,
@@ -36,11 +30,6 @@ export const Settings = ({
   checkKeyring,
 }: SettingsProps) => {
   const { t } = useTranslation();
-  const [anisetteServer, setAnisetteServer] = useStore<string>(
-    "anisetteServer3-1",
-    "mac-ani.jkcoxson.com",
-  );
-
   const [overrideKeyring, setOverrideKeyring] = useStore<boolean>(
     "overrideKeyring",
     false,
@@ -51,10 +40,6 @@ export const Settings = ({
   const { err } = useError();
   const { confirm } = useDialog();
 
-  const anisetteOptions = anisetteServers.map(([value, label]) => ({
-    value,
-    label,
-  }));
   const logLevelOptions = [
     { value: String(LogLevel.Debug), label: t("settings.debug") },
     { value: String(LogLevel.Info), label: t("settings.info") },
@@ -101,22 +86,6 @@ export const Settings = ({
 
       <div className="settings-section">
         <Dropdown
-          label={t("settings.anisette_server")}
-          labelId="anisette-label"
-          options={anisetteOptions}
-          value={anisetteServer}
-          onChange={setAnisetteServer}
-          allowCustom
-          defaultCustomValue="ani.yourserver.com"
-          customPlaceholder={t("settings.custom_anisette_placeholder")}
-          customLabel={t("settings.custom_anisette")}
-          customToggleLabel={t("settings.use_custom_anisette")}
-          presetToggleLabel={t("settings.back_preset_servers")}
-        />
-      </div>
-
-      <div className="settings-section">
-        <Dropdown
           label={t("app.language")}
           labelId="language"
           options={sortedLanguages.map(([value, label]) => ({
@@ -140,33 +109,11 @@ export const Settings = ({
           <span className="checkbox-title">{t("settings.dont_use_keyring")}</span>
         </label>
         <p className="settings-hint">
-          {t("settings.dont_use_keyring_message")}
+          {t("settings.dont_use_keyring_memory_message")}
         </p>
       </div>
 
       <div className="settings-actions-group">
-        <button
-          className="danger"
-          onClick={() =>
-            confirm(
-              t("settings.reset_anisette_title"),
-              t("settings.reset_anisette_message"),
-              () =>
-                toast.promise(invoke("reset_anisette_state"), {
-                  loading: t("settings.resetting_anisette_state"),
-                  success: (didReset) =>
-                    didReset
-                      ? t("settings.anisette_state_reset_success")
-                      : t("settings.anisette_state_not_found"),
-                  error: (e) =>
-                    err(t("settings.failed_reset_anisette_state"), e),
-                }),
-            )
-          }
-        >
-          <FaArrowsRotate /> {t("settings.reset_anisette_title")}
-        </button>
-
         <button
           className="danger"
           onClick={() => {

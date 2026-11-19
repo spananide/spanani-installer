@@ -196,8 +196,7 @@
     "deleting_stored_rppairing": "Saxlanılmış cütləşmə silinir...",
     "stored_rppairing_deleted_success": "Saxlanılmış cütləşmə uğurla silindi!",
     "failed_delete_stored_rppairing": "Saxlanılmış cütləşmə silinə bilmədi",
-    "dont_use_keyring": "Açar zəncirindən istifadə etmə",
-    "dont_use_keyring_message": "Bu seçim cütləşmə fayllarını, anisette vəziyyətini və sertifikatları diskdə saxladığından spanani Installer-i daha az təhlükəsiz edir. Yalnız standart açar zənciri işləmədikdə və riskləri anladığınızda aktivləşdirin."
+    "dont_use_keyring": "Açar zəncirindən istifadə etmə"
   },
   "dialog": {
     "confirm": "Təsdiq",

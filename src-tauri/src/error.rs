@@ -80,6 +80,7 @@ impl From<Report> for AppError {
                 match err {
                     &SideloadError::AuthWithMessage(code, _) => match code {
                         -20209 => return AppError::AccountLocked(report_str),
+                        -80043 | -80045 | -80046 => return AppError::Anisette(report_str),
                         _ => {
                             return AppError::Auth(report_str);
                         }

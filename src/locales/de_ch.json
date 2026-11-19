@@ -196,8 +196,7 @@
     "deleting_stored_rppairing": "Gspeicherets Pairing wird glöscht...",
     "stored_rppairing_deleted_success": "Gspeicherets Pairing erfolgreich glöscht!",
     "failed_delete_stored_rppairing": "Gspeicherets Pairing het nöd chöne glöscht werde",
-    "dont_use_keyring": "Keyring nöd verwände",
-    "dont_use_keyring_message": "Dadurch wird spanani Installer weniger sicher, will Pairing-Dateie, de Anisette-Status und Zertifikat uf de Festplatte gspeicheret werde. Aktivier die Option nume, wenn de standardmässige Keyring-Speicher nöd funktioniert und du d Risike versteisch."
+    "dont_use_keyring": "Keyring nöd verwände"
   },
   "dialog": {
     "confirm": "Bestätige",

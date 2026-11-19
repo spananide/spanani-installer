@@ -196,8 +196,7 @@
     "deleting_stored_rppairing": "Usuwanie zapisanego parowania...",
     "stored_rppairing_deleted_success": "Zapisane parowanie zostało pomyślnie usunięte!",
     "failed_delete_stored_rppairing": "Nie udało się usunąć zapisanego parowania",
-    "dont_use_keyring": "Nie używaj keyringu",
-    "dont_use_keyring_message": "To zmniejsza bezpieczeństwo spanani Installera, ponieważ pliki parowania, stan Anisette i certyfikaty będą zapisywane na dysku. Włącz to tylko wtedy, gdy domyślne przechowywanie w keyringu nie działa i rozumiesz ryzyko."
+    "dont_use_keyring": "Nie używaj keyringu"
   },
   "dialog": {
     "confirm": "Potwierdź",

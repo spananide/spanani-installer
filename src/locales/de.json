@@ -201,8 +201,7 @@
     "deleting_stored_rppairing": "Pairing-Datei wird gelöscht...",
     "stored_rppairing_deleted_success": "Gespeicherte Pairing-Datei erfolgreich gelöscht!",
     "failed_delete_stored_rppairing": "Pairing-Datei konnte nicht gelöscht werden",
-    "dont_use_keyring": "Schlüsselbund nicht verwenden",
-    "dont_use_keyring_message": "Dies speichert Pairing-Dateien, Anisette-Status und Zertifikate direkt auf der Festplatte. Nur aktivieren, wenn der Standardspeicher nicht funktioniert."
+    "dont_use_keyring": "Schlüsselbund nicht verwenden"
   },
   "dialog": {
     "confirm": "Bestätigen",

@@ -197,8 +197,7 @@
     "deleting_stored_rppairing": "正在刪除已儲存的配對...",
     "stored_rppairing_deleted_success": "已成功刪除儲存的配對！",
     "failed_delete_stored_rppairing": "刪除已儲存的配對失敗",
-    "dont_use_keyring": "不使用鑰匙圈",
-    "dont_use_keyring_message": "這會將配對檔案、Anisette 狀態和憑證儲存在磁碟上，從而降低 spanani Installer 的安全性。只有在預設的鑰匙圈儲存無法運作且您了解相關風險時，才啟用此選項。"
+    "dont_use_keyring": "不使用鑰匙圈"
   },
   "dialog": {
     "confirm": "確認",

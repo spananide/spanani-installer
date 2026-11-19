@@ -25,7 +25,7 @@ use tracing::debug;
 
 use crate::{
     error::AppError,
-    secure_storage::create_sideloading_storage,
+    secure_storage::{create_sideloading_storage, delete_session_data, keyring_available},
     sideload::{SideloaderGuard, SideloaderMutex},
 };
 
@@ -43,7 +43,7 @@ pub async fn login_new(
     let mut sideloader_guard = sideloader_state.lock().unwrap();
     *sideloader_guard = Some(account);
 
-    if save_credentials {
+    if save_credentials && keyring_available() {
         let pass_entry = Entry::new("iloader", &email).map_err(|e| {
             AppError::KeyringWithMessage(
                 "Failed to create entry for credentials".into(),
@@ -136,6 +136,10 @@ pub fn invalidate_account(sideloader_state: State<'_, SideloaderMutex>) {
 
 #[tauri::command]
 pub fn reset_anisette_state() -> Result<bool, AppError> {
+    if !keyring_available() {
+        return Ok(delete_session_data("anisette_state"));
+    }
+
     let state_entry = Entry::new("iloader", "anisette_state").map_err(|e| {
         AppError::KeyringWithMessage(
             "Failed to create keyring entry for anisette".into(),

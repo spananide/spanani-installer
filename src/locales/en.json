@@ -83,7 +83,9 @@
     "hide_certificate_list": "Hide certificate list",
     "choose_what_to_revoke": "Choose what to revoke",
     "continue": "Continue",
-    "no_keyring_available": "Unable to save credentials securely on this device."
+    "no_keyring_available": "Windows Credential Manager is not available, so your password is not saved. Enter it each time you sign in.",
+    "anisette_server_label": "Anisette server: {{server}}",
+    "change_anisette": "Change"
   },
   "device": {
     "title": "Device",
@@ -207,7 +209,11 @@
     "stored_rppairing_deleted_success": "Stored pairing deleted successfully.",
     "failed_delete_stored_rppairing": "Failed to delete stored pairing",
     "dont_use_keyring": "Do not use keyring",
-    "dont_use_keyring_message": "Stores pairing files and credentials on disk. Enable only if keyring storage fails."
+    "dont_use_keyring_memory_message": "Keeps pairing files and sign-in data in memory only until the app closes. Your password is not saved, so you sign in each time. Enable only if keyring storage fails."
+  },
+  "anisette": {
+    "title": "Anisette server",
+    "description": "Apple checks anisette data from this server every time you sign in. If sign-in fails with -80045, -80046 or a similar error, choose another server, reset the anisette state and sign in again."
   },
   "dialog": {
     "confirm": "Confirm",
@@ -217,6 +223,8 @@
     "title": "An error occurred: {{msg}}",
     "unknown": "Unknown",
     "suggestions_heading": "Suggestions",
+    "anisette_hint": "Apple rejected the sign-in data from the anisette server ({{server}}). Choose another anisette server, then sign in again.",
+    "open_anisette_settings": "Open anisette settings",
     "support_message": "If the issue persists, copy the error message and reach out for support.",
     "suggestions": {
       "underage": [
@@ -264,7 +272,7 @@
       ],
       "anisette": [
         "Ensure your computer is connected to the internet.",
-        "Change your anisette server in Tools.",
+        "Change your anisette server in Tools > Anisette server.",
         "Check that ((link:{{anisetteServerUrl}})) is reachable."
       ],
       "keyring": [
@@ -388,6 +396,7 @@
     "tab_pairing": "Pairing",
     "tab_certificates": "Certificates",
     "tab_appids": "App IDs",
+    "tab_anisette": "Anisette server",
     "tab_settings": "Settings",
     "tab_more_installers": "More installers",
     "tab_about": "About",

@@ -196,8 +196,7 @@
     "deleting_stored_rppairing": "Kayıtlı eşleştirme siliniyor...",
     "stored_rppairing_deleted_success": "Kayıtlı eşleştirme başarıyla silindi!",
     "failed_delete_stored_rppairing": "Kayıtlı eşleştirme silinemedi",
-    "dont_use_keyring": "Anahtar Zinciri'ni kullanma",
-    "dont_use_keyring_message": "Bu seçenek eşleştirme dosyalarını, anisette verilerini ve sertifikaları doğrudan diskte saklayarak spanani Installer'ı daha az güvenli hâle getirir. Bunu yalnızca varsayılan anahtar zinciri depolaması çalışmıyorsa ve risklerin farkındaysanız etkinleştirin."
+    "dont_use_keyring": "Anahtar Zinciri'ni kullanma"
   },
   "dialog": {
     "confirm": "Onayla",

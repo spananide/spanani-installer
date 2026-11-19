@@ -93,6 +93,22 @@
   gap: 4px;
 }
 
+.error-anisette-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--paper-sunk);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-inner);
+  padding: 12px;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.error-anisette-box button {
+  align-self: flex-start;
+}
+
 .error-support-text {
   color: var(--ink-faint);
   font-size: 12px;

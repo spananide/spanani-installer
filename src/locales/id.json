@@ -196,8 +196,7 @@
     "deleting_stored_rppairing": "Menghapus pairing tersimpan...",
     "stored_rppairing_deleted_success": "Pairing tersimpan berhasil dihapus!",
     "failed_delete_stored_rppairing": "Gagal menghapus pairing tersimpan",
-    "dont_use_keyring": "Jangan gunakan keyring",
-    "dont_use_keyring_message": "Ini membuat spanani Installer kurang aman dengan menyimpan berkas pairing, state anisette, dan sertifikat di disk. Aktifkan ini hanya jika penyimpanan keyring default tidak berfungsi dan Anda memahami risikonya."
+    "dont_use_keyring": "Jangan gunakan keyring"
   },
   "dialog": {
     "confirm": "Konfirmasi",

@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { Modal } from "./components/Modal";
@@ -18,11 +19,12 @@ import {
   parseLinkToken,
 } from "./errors";
 import { usePlatform } from "./PlatformContext";
-import { FaCircleExclamation, FaCopy } from "react-icons/fa6";
+import { FaCircleExclamation, FaCopy, FaServer } from "react-icons/fa6";
 
 export const ErrorContext = createContext<{
   err: (msg: string, err: AppError) => string;
-}>({ err: () => "" });
+  setAnisetteSettingsOpener: (open: (() => void) | null) => void;
+}>({ err: () => "", setAnisetteSettingsOpener: () => {} });
 
 export const ErrorProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -38,6 +40,14 @@ export const ErrorProvider: React.FC<{ children: React.ReactNode }> = ({
     "mac-ani.jkcoxson.com",
   );
   const { platform } = usePlatform();
+  const anisetteSettingsOpener = useRef<(() => void) | null>(null);
+
+  const setAnisetteSettingsOpener = useCallback(
+    (open: (() => void) | null) => {
+      anisetteSettingsOpener.current = open;
+    },
+    [],
+  );
 
   const getSuggestions = useCallback(
     (type: ErrorVariant): string[] => {
@@ -70,6 +80,7 @@ export const ErrorProvider: React.FC<{ children: React.ReactNode }> = ({
           setMoreDetailsOpen(false);
           return msg;
         },
+        setAnisetteSettingsOpener,
       }}
     >
       <Modal
@@ -119,6 +130,22 @@ export const ErrorProvider: React.FC<{ children: React.ReactNode }> = ({
             >
               {error?.message.replace(/^\n+/, "")}
             </pre>
+          )}
+          {error?.type === "anisette" && anisetteSettingsOpener.current && (
+            <div className="error-anisette-box">
+              <p>{t("error.anisette_hint", { server: anisetteServer })}</p>
+              <button
+                className="primary"
+                onClick={() => {
+                  setError(null);
+                  setMsg(null);
+                  setMoreDetailsOpen(false);
+                  anisetteSettingsOpener.current?.();
+                }}
+              >
+                <FaServer /> {t("error.open_anisette_settings")}
+              </button>
+            </div>
           )}
           <div className="suggestions">
             {suggestions.length > 0 && (

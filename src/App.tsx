@@ -19,11 +19,12 @@ import {
   OperationUpdate,
 } from "./components/operations";
 import OperationView from "./components/OperationView";
-import { ToolsModal } from "./components/ToolsModal";
+import { ToolsModal, TabType } from "./components/ToolsModal";
 import { AboutModal } from "./components/AboutModal";
 import { checkForUpdates } from "./update";
 import { ErrorVariant, getErrorSuggestions, parseLinkToken } from "./errors";
 import { useStore } from "./StoreContext";
+import { useError } from "./ErrorContext";
 import mark3d from "./assets/mark3d.png";
 import banner3d from "./assets/banner3d.png";
 import {
@@ -35,6 +36,7 @@ import {
   FaCopy,
   FaArrowsRotate,
   FaCircleInfo,
+  FaServer,
 } from "react-icons/fa6";
 
 export default function App() {
@@ -47,6 +49,7 @@ export default function App() {
   const [version, setVersion] = useState<string>("");
   const [stepOverride, setStepOverride] = useState<number | null>(null);
   const [isToolsOpen, setIsToolsOpen] = useState(false);
+  const [toolsTab, setToolsTab] = useState<TabType>("sideload");
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [noKeyringAvailable, setNoKeyringAvailable] = useState<boolean>(false);
@@ -54,6 +57,8 @@ export default function App() {
     "anisetteServer3-1",
     "mac-ani.jkcoxson.com",
   );
+
+  const { setAnisetteSettingsOpener } = useError();
 
   const refreshDevicesRef = useRef<(() => void) | null>(null);
   const mockAutoStartFired = useRef(false);
@@ -71,6 +76,16 @@ export default function App() {
   useEffect(() => {
     checkKeyring();
   }, [checkKeyring]);
+
+  const openAnisetteSettings = useCallback(() => {
+    setToolsTab("anisette");
+    setIsToolsOpen(true);
+  }, []);
+
+  useEffect(() => {
+    setAnisetteSettingsOpener(openAnisetteSettings);
+    return () => setAnisetteSettingsOpener(null);
+  }, [openAnisetteSettings, setAnisetteSettingsOpener]);
 
   useEffect(() => {
     const fetchVersion = async () => {
@@ -397,6 +412,8 @@ export default function App() {
             loggedInAs={loggedInAs}
             setLoggedInAs={setLoggedInAs}
             noKeyringAvailable={noKeyringAvailable}
+            anisetteServer={anisetteServer}
+            openAnisetteSettings={openAnisetteSettings}
             isCollapsed={activeStep !== 2 && loggedInAs !== null}
             onExpand={() => setStepOverride(2)}
             onCompleteStep={() => setStepOverride(null)}
@@ -561,6 +578,14 @@ export default function App() {
                       )}
 
                       <div className="failure-actions">
+                        {failedError?.extraDetails.type === "anisette" && (
+                          <button
+                            type="button"
+                            onClick={openAnisetteSettings}
+                          >
+                            <FaServer /> {t("error.open_anisette_settings")}
+                          </button>
+                        )}
                         <button
                           type="button"
                           className="btn-copy"
@@ -619,6 +644,8 @@ export default function App() {
       <ToolsModal
         isOpen={isToolsOpen}
         close={() => setIsToolsOpen(false)}
+        activeTab={toolsTab}
+        setActiveTab={setToolsTab}
         version={version}
         selectedDevice={selectedDevice}
         setSelectedDevice={setSelectedDevice}

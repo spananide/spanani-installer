@@ -196,8 +196,7 @@
     "deleting_stored_rppairing": "Opgeslagen koppeling verwijderen...",
     "stored_rppairing_deleted_success": "Opgeslagen koppeling succesvol verwijderd!",
     "failed_delete_stored_rppairing": "Kon opgeslagen koppeling niet verwijderen",
-    "dont_use_keyring": "Sleutelhanger niet gebruiken",
-    "dont_use_keyring_message": "Het opslaan van koppelingsbestanden, de Anisette-status en certificaten op de harde schijf maakt spanani Installer kwetsbaarder. Gebruik deze optie alleen als de standaard opslag in de sleutelhanger niet werkt en je de risico's begrijpt."
+    "dont_use_keyring": "Sleutelhanger niet gebruiken"
   },
   "dialog": {
     "confirm": "Bevestigen",

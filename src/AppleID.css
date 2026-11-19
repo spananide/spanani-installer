@@ -150,6 +150,19 @@
   color: var(--warning);
 }
 
+.anisette-server-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+.anisette-server-line .link-button {
+  font-size: 12px !important;
+}
+
 .form-actions {
   display: flex;
   gap: 10px;

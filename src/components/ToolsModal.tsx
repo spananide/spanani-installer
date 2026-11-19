@@ -8,6 +8,7 @@ import { Certificates } from "../pages/Certificates";
 import { AppIds } from "../pages/AppIds";
 import { Pairing } from "../pages/Pairing";
 import { Settings } from "../pages/Settings";
+import { Anisette } from "../pages/Anisette";
 import { DeviceInfo } from "../Device";
 import {
   Operation,
@@ -28,14 +29,16 @@ import {
   FaChevronDown,
   FaChevronRight,
   FaDownload,
+  FaServer,
 } from "react-icons/fa6";
 import "./ToolsModal.css";
 
-type TabType =
+export type TabType =
   | "sideload"
   | "pairing"
   | "certificates"
   | "appids"
+  | "anisette"
   | "settings"
   | "other_installers"
   | "about";
@@ -43,6 +46,8 @@ type TabType =
 export const ToolsModal = ({
   isOpen,
   close,
+  activeTab,
+  setActiveTab,
   version,
   selectedDevice,
   setSelectedDevice,
@@ -54,6 +59,8 @@ export const ToolsModal = ({
 }: {
   isOpen: boolean;
   close: () => void;
+  activeTab: TabType;
+  setActiveTab: (tab: TabType) => void;
   version: string;
   selectedDevice: DeviceInfo | null;
   setSelectedDevice: (device: DeviceInfo | null) => void;
@@ -64,7 +71,6 @@ export const ToolsModal = ({
   checkKeyring: () => Promise<void>;
 }) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<TabType>("sideload");
   const [moreInstallersExpanded, setMoreInstallersExpanded] = useState(false);
 
   const ensureReady = (): boolean => {
@@ -153,6 +159,14 @@ export const ToolsModal = ({
             >
               <FaBoxesPacking />
               <span>{t("tools.tab_more_installers")}</span>
+            </button>
+
+            <button
+              className={`tools-nav-item${activeTab === "anisette" ? " active" : ""}`}
+              onClick={() => setActiveTab("anisette")}
+            >
+              <FaServer />
+              <span>{t("tools.tab_anisette")}</span>
             </button>
 
             <button
@@ -307,6 +321,8 @@ export const ToolsModal = ({
               </div>
             </div>
           )}
+
+          {activeTab === "anisette" && <Anisette />}
 
           {activeTab === "settings" && (
             <Settings

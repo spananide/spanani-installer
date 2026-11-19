@@ -5,7 +5,6 @@ import { emit, listen } from "@tauri-apps/api/event";
 import { load } from "@tauri-apps/plugin-store";
 import { Modal } from "./components/Modal";
 import { toast } from "sonner";
-import { useStore } from "./StoreContext";
 import { useError } from "./ErrorContext";
 import { Certificate } from "./pages/Certificates";
 import { useTranslation } from "react-i18next";
@@ -17,6 +16,7 @@ import {
   FaTrashCan,
   FaKey,
   FaCircleExclamation,
+  FaServer,
 } from "react-icons/fa6";
 
 const storePromise = load("data.json");
@@ -25,6 +25,8 @@ export const AppleID = ({
   loggedInAs,
   setLoggedInAs,
   noKeyringAvailable,
+  anisetteServer,
+  openAnisetteSettings,
   isCollapsed,
   onExpand,
   onCompleteStep,
@@ -33,6 +35,8 @@ export const AppleID = ({
   loggedInAs: string | null;
   setLoggedInAs: (id: string | null) => void;
   noKeyringAvailable: boolean;
+  anisetteServer: string;
+  openAnisetteSettings: () => void;
   isCollapsed: boolean;
   onExpand: () => void;
   onCompleteStep?: () => void;
@@ -47,10 +51,6 @@ export const AppleID = ({
   const [tfaOpen, setTfaOpen] = useState<boolean>(false);
   const [tfaCode, setTfaCode] = useState<string>("");
   const [addAccountOpen, setAddAccountOpen] = useState<boolean>(false);
-  const [anisetteServer] = useStore<string>(
-    "anisetteServer3-1",
-    "mac-ani.jkcoxson.com",
-  );
   const [certs, setCerts] = useState<Certificate[] | null>(null);
   const [selectedSerials, setSelectedSerials] = useState<string[]>([]);
   const [chooseCertsOpen, setChooseCertsOpen] = useState<boolean>(false);
@@ -346,7 +346,7 @@ export const AppleID = ({
         )}
 
         {/* Stored Accounts List */}
-        {!loggedInAs && storedIds.length > 0 && !addAccountOpen && (
+        {!loggedInAs && storedIds.length > 0 && !noKeyringAvailable && !addAccountOpen && (
           <div className="stored-accounts-section">
             <h4 className="section-small-title">{t("flow.step2_stored_logins")}</h4>
             <div className="stored-accounts-list">
@@ -414,7 +414,7 @@ export const AppleID = ({
         )}
 
         {/* New Login Form */}
-        {!loggedInAs && (storedIds.length === 0 || addAccountOpen) && (
+        {!loggedInAs && (storedIds.length === 0 || noKeyringAvailable || addAccountOpen) && (
           <form
             className="apple-login-form"
             onSubmit={async (e) => {
@@ -427,7 +427,7 @@ export const AppleID = ({
                 await invoke("login_new", {
                   email: emailInput,
                   password: passwordInput,
-                  saveCredentials,
+                  saveCredentials: saveCredentials && !noKeyringAvailable,
                   anisetteServer,
                 });
                 setForceUpdateIds((v) => v + 1);
@@ -482,11 +482,25 @@ export const AppleID = ({
               </label>
             )}
 
+            <p className="anisette-server-line">
+              <FaServer />
+              <span>
+                {t("apple_id.anisette_server_label", { server: anisetteServer })}
+              </span>
+              <button
+                type="button"
+                className="link-button"
+                onClick={openAnisetteSettings}
+              >
+                {t("apple_id.change_anisette")}
+              </button>
+            </p>
+
             <div className="form-actions">
               <button type="submit" className="primary btn-large">
                 {t("flow.step2_login_button")}
               </button>
-              {addAccountOpen && storedIds.length > 0 && (
+              {addAccountOpen && storedIds.length > 0 && !noKeyringAvailable && (
                 <button
                   type="button"
                   onClick={() => setAddAccountOpen(false)}
