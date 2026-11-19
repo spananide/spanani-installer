@@ -1,0 +1,150 @@
+.op-view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.op-header {
+  text-align: center;
+}
+
+.op-header h2 {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.op-status-text {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.op-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--paper-sunk);
+  padding: 16px;
+  border-radius: var(--radius-inner);
+  border: 1px solid var(--border);
+}
+
+.op-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.op-step-icon {
+  margin-top: 2px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-check {
+  color: var(--success);
+  font-size: 18px;
+}
+
+.icon-error {
+  color: var(--danger);
+  font-size: 18px;
+}
+
+.icon-skipped {
+  color: var(--ink-faint);
+  font-size: 18px;
+}
+
+.icon-waiting {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--ink-faint);
+}
+
+.op-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(153, 85, 231, 0.2);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.op-step-content {
+  flex: 1;
+}
+
+.op-step-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.op-error-box {
+  margin-top: 6px;
+}
+
+.op-error-pre {
+  background: var(--paper-raised);
+  border: 1px solid var(--border);
+  color: var(--danger);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.op-error-pre.full {
+  margin-top: 6px;
+  max-height: 160px;
+  overflow: auto;
+}
+
+.op-success-banner {
+  background: var(--paper-raised);
+  border: 1px solid var(--border);
+  color: var(--success);
+  padding: 12px 16px;
+  border-radius: var(--radius-inner);
+  font-size: 13px;
+  text-align: center;
+}
+
+.op-failure-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.op-suggestions {
+  background: var(--paper-sunk);
+  padding: 12px;
+  border-radius: var(--radius-inner);
+  border: 1px solid var(--border);
+}
+
+.op-suggestions h4 {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.op-suggestions ul {
+  padding-left: 18px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.op-support-hint {
+  font-size: 12px;
+  color: var(--ink-faint);
+}

@@ -1,0 +1,117 @@
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-page h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.toggle-setting {
+  background: var(--paper-sunk);
+  padding: 12px 16px;
+  border-radius: var(--radius-inner);
+  border: 1px solid var(--border);
+}
+
+.settings-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.settings-checkbox-label input[type="checkbox"] {
+  accent-color: var(--brand);
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.settings-hint {
+  font-size: 12px;
+  color: var(--ink-faint);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+.settings-actions-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.settings-actions-group button {
+  flex: 1 1 calc(50% - 10px);
+}
+
+.text-muted {
+  color: var(--ink-faint);
+  font-size: 12px;
+}
+
+.log-outer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 600px;
+  max-width: 90vw;
+}
+
+.log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.log-header h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.log-inner {
+  height: 340px;
+  background: var(--paper-sunk);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-inner);
+  padding: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  overflow: auto;
+}
+
+.log-inner.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-faint);
+}
+
+.log-entry {
+  padding: 3px 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.log-time {
+  color: var(--ink-faint);
+}
+
+.log-target {
+  color: var(--ink-soft);
+}
+
+.log-msg {
+  color: var(--ink);
+}
