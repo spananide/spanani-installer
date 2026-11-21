@@ -212,12 +212,12 @@ async fn login(
             RemoteV3AnisetteProvider::default()?
                 .set_serial_number("0".to_string())
                 .set_storage(create_sideloading_storage(app)?)
-                // just temporary while waiting for the anisette servers to start reporting this
+                // gsa.apple.com answers 503 to "<macOS;" since 2026-11-19: keep the "Mac OS X" spelling
                 .set_client_info_override(Some(AnisetteClientInfo {
                     client_info:
-                        "<Mac15,7> <macOS;27.0;26A5378j> <com.apple.AuthKit/1 (com.apple.akd/1.0)>"
+                        "<MacBookAir10,1> <Mac OS X;27.3;26C5035r> <com.apple.AuthKit/1 (com.apple.akd/1.0)>"
                             .to_string(),
-                    user_agent: "akd/1.0 CFNetwork/811.5.4".to_string(),
+                    user_agent: "akd/1.0 CFNetwork/3896.300.31 Darwin/27.3.0".to_string(),
                 }))
                 .set_url(&anisette_url),
         )
