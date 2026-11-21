@@ -211,7 +211,9 @@ pub async fn install_sidestore_operation(
 
 // LiveContainer bundled variant configuration.
 #[cfg(feature = "lc")]
-const STORE_APP_NAME: &str = "LiveContainer";
+const STORE_APP_NAME: &str = "spanani Store";
+#[cfg(feature = "lc")]
+const STORE_BUNDLE_PREFIX: Option<&str> = Some("com.kdt.livecontainer");
 #[cfg(feature = "lc")]
 const LC_PAIRING_PATH: &str =
     "SideStore/Documents/ALTPairingFile.mobiledevicepairing;SideStore/Documents/PairingFile_RemoteRP.plist;SideStore/Documents/PairingFile_Lockdown.plist";
@@ -219,6 +221,8 @@ const LC_PAIRING_PATH: &str =
 // Standard spanani Store download configuration.
 #[cfg(not(feature = "lc"))]
 const STORE_APP_NAME: &str = "spanani Store";
+#[cfg(not(feature = "lc"))]
+const STORE_BUNDLE_PREFIX: Option<&str> = None;
 
 #[tauri::command]
 pub async fn install_spanani_store_operation(
@@ -278,7 +282,7 @@ pub async fn install_spanani_store_operation(
     op.move_on("install", "pairing")?;
     let spanani_info = op.fail_if_err(
         "pairing",
-        get_app_info_by_name(&device.info, STORE_APP_NAME).await,
+        get_app_info_by_name(&device.info, STORE_APP_NAME, STORE_BUNDLE_PREFIX).await,
     )?;
     if let Some(info) = spanani_info {
         let mut usbmuxd = op.fail_if_err("pairing", get_usbmuxd().await)?;

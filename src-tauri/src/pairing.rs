@@ -48,6 +48,10 @@ const PAIRING_APPS: &[(&str, &str)] = &[
         "LiveContainer",
         "SideStore/Documents/ALTPairingFile.mobiledevicepairing",
     ),
+    (
+        "spanani Store (LiveContainer)",
+        "SideStore/Documents/ALTPairingFile.mobiledevicepairing;SideStore/Documents/PairingFile_RemoteRP.plist;SideStore/Documents/PairingFile_Lockdown.plist",
+    ),
     ("Feather", "pairingFile.plist"),
     ("StikDebug", "pairingFile.plist"),
     ("StikDebug (Sideloaded)", "pairingFile.plist"),
@@ -500,6 +504,8 @@ pub async fn installed_pairing_apps(
         if PAIRING_APPS.iter().any(|(name, _)| name == &n) {
             if bundle_id.contains("com.stik.stikdebug") {
                 installed.insert(format!("{} (Sideloaded)", n), bundle_id);
+            } else if n == "spanani Store" && bundle_id.starts_with("com.kdt.livecontainer") {
+                installed.insert("spanani Store (LiveContainer)".to_string(), bundle_id);
             } else {
                 installed.insert(n.to_string(), bundle_id);
             }
@@ -522,6 +528,7 @@ pub async fn installed_pairing_apps(
 pub async fn get_app_info_by_name(
     device: &DeviceInfo,
     display_name: &str,
+    bundle_prefix: Option<&str>,
 ) -> Result<Option<PairingAppInfo>, AppError> {
     let provider = get_provider(device).await?;
     let mut installation_proxy =
@@ -547,7 +554,7 @@ pub async fn get_app_info_by_name(
             .and_then(|x| x.get("CFBundleDisplayName").and_then(|x| x.as_string()))
             .ok_or(AppError::Misc("Failed to parse installed apps".to_string()))?;
 
-        if n == display_name {
+        if n == display_name && bundle_prefix.map_or(true, |p| bundle_id.starts_with(p)) {
             return Ok(Some(PairingAppInfo {
                 name: n.to_string(),
                 bundle_id: bundle_id.to_string(),
