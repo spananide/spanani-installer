@@ -209,6 +209,17 @@ pub async fn install_sidestore_operation(
     Ok(())
 }
 
+// LiveContainer bundled variant configuration.
+#[cfg(feature = "lc")]
+const STORE_APP_NAME: &str = "LiveContainer";
+#[cfg(feature = "lc")]
+const LC_PAIRING_PATH: &str =
+    "SideStore/Documents/ALTPairingFile.mobiledevicepairing;SideStore/Documents/PairingFile_RemoteRP.plist;SideStore/Documents/PairingFile_Lockdown.plist";
+
+// Standard spanani Store download configuration.
+#[cfg(not(feature = "lc"))]
+const STORE_APP_NAME: &str = "spanani Store";
+
 #[tauri::command]
 pub async fn install_spanani_store_operation(
     handle: AppHandle,
@@ -218,15 +229,35 @@ pub async fn install_spanani_store_operation(
 ) -> Result<(), AppError> {
     let op = Operation::new("install_spanani_store".to_string(), &window);
     op.start("download")?;
-    let filename = "SpananiStore.ipa";
-    let url = "https://github.com/spananide/spanani-store/releases/latest/download/SpananiStore.ipa";
 
-    let dest = handle
-        .path()
-        .temp_dir()
-        .map_err(|e| AppError::Filesystem("Failed to get temp dir".into(), e.to_string()))?
-        .join(filename);
-    op.fail_if_err("download", download(url, &dest).await)?;
+    #[cfg(feature = "lc")]
+    let dest = {
+        let dest = handle
+            .path()
+            .resource_dir()
+            .map_err(|e| AppError::Filesystem("Failed to get resource dir".into(), e.to_string()))?
+            .join("LiveContainer+spanani.ipa");
+        op.fail_if_err(
+            "download",
+            tokio::fs::metadata(&dest)
+                .await
+                .map_err(|e| AppError::Filesystem("Bundled IPA missing".into(), e.to_string())),
+        )?;
+        dest
+    };
+    #[cfg(not(feature = "lc"))]
+    let dest = {
+        let filename = "SpananiStore.ipa";
+        let url = "https://github.com/spananide/spanani-store/releases/latest/download/SpananiStore.ipa";
+
+        let dest = handle
+            .path()
+            .temp_dir()
+            .map_err(|e| AppError::Filesystem("Failed to get temp dir".into(), e.to_string()))?
+            .join(filename);
+        op.fail_if_err("download", download(url, &dest).await)?;
+        dest
+    };
     op.move_on("download", "install")?;
     let device = {
         let device_guard = device_state.lock().unwrap();
@@ -247,7 +278,7 @@ pub async fn install_spanani_store_operation(
     op.move_on("install", "pairing")?;
     let spanani_info = op.fail_if_err(
         "pairing",
-        get_app_info_by_name(&device.info, "spanani Store").await,
+        get_app_info_by_name(&device.info, STORE_APP_NAME).await,
     )?;
     if let Some(info) = spanani_info {
         let mut usbmuxd = op.fail_if_err("pairing", get_usbmuxd().await)?;
@@ -257,16 +288,21 @@ pub async fn install_spanani_store_operation(
             get_provider_from_connection(&device.info, &mut usbmuxd).await,
         )?;
 
+        #[cfg(feature = "lc")]
+        let pairing_path = LC_PAIRING_PATH.to_string();
+        #[cfg(not(feature = "lc"))]
+        let pairing_path = info.path;
+
         op.fail_if_err(
             "pairing",
-            place_file(device.pairing, &provider, info.bundle_id, info.path).await,
+            place_file(device.pairing, &provider, info.bundle_id, pairing_path).await,
         )?;
     } else {
         return op.fail(
             "pairing",
             AppError::HouseArrest(
-                "spanani Store not found".into(),
-                "The device did not report the spanani Store as installed".into(),
+                format!("{STORE_APP_NAME} not found"),
+                format!("The device did not report the {STORE_APP_NAME} as installed"),
             ),
         );
     }

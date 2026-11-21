@@ -1,0 +1,9 @@
+{
+  "productName": "spanani LiveContainer Installer",
+  "identifier": "de.spanani.installer.lc",
+  "bundle": {
+    "resources": {
+      "resources/LiveContainer+spanani.ipa": "LiveContainer+spanani.ipa"
+    }
+  }
+}

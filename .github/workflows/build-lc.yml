@@ -1,0 +1,49 @@
+name: Build LiveContainer installer
+
+on:
+  workflow_dispatch:
+
+jobs:
+  windows-lc:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: win-lc-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: win-lc-
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Add MSVC to PATH
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Perl and Make
+        run: choco install strawberryperl make --no-progress
+
+      - uses: oven-sh/setup-bun@v2
+
+      - run: bun i --frozen-lockfile
+
+      - name: Download bundled IPA
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: mkdir -p src-tauri/resources && gh release download lc-experimental -R spananide/spanani-store -p 'LiveContainer+spanani.ipa' -D src-tauri/resources --clobber && ls -la src-tauri/resources
+
+      - name: Build
+        env:
+          VITE_LC: "1"
+        run: bunx tauri build --config src-tauri/tauri.conf.lc.json --features lc --bundles nsis
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer-lc
+          path: src-tauri/target/release/bundle/nsis/*.exe
