@@ -14,10 +14,12 @@ use crate::{
     pairing::{get_app_info_by_name, get_sidestore_info, place_file},
 };
 use isideload::{
+    dev::certificates::CertificatesApi,
     sideload::{application::SpecialApp, sideloader::Sideloader},
     util::callbacks::{ExtensionsBehaviorCallbackBox, MaxCertsCallbackBox},
 };
 use tauri::{AppHandle, Manager, State, Window};
+use tracing::warn;
 
 static BUSY: std::sync::atomic::AtomicUsize = AtomicUsize::new(0);
 
@@ -98,6 +100,54 @@ pub async fn sideload(
             Some(&device.pairing),
         )
         .await?;
+
+    if matches!(special, Some(SpecialApp::SideStoreLc)) {
+        // Best-effort: pass candidate cert passwords (machine_id) to the app.
+        let mut machine_ids = Vec::new();
+        match sideloader.get_mut().get_team().await {
+            Ok(team) => {
+                let dev_session = sideloader.get_mut().get_dev_session();
+                match dev_session.list_all_development_certs(&team, None).await {
+                    Ok(certs) => {
+                        for cert in certs {
+                            if cert.machine_name.as_deref() == Some("iloader") {
+                                if let Some(id) = cert.machine_id {
+                                    if !id.is_empty() && !machine_ids.contains(&id) {
+                                        machine_ids.push(id);
+                                    }
+                                }
+                            }
+                        }
+                        if machine_ids.is_empty() {
+                            warn!("No iloader development certificates found for spanani Store");
+                        }
+                    }
+                    Err(e) => warn!("Failed to list development certificates: {e}"),
+                }
+            }
+            Err(e) => warn!("Failed to get developer team: {e}"),
+        }
+
+        if !machine_ids.is_empty() {
+            let joined = machine_ids.join("\n");
+            match get_app_info_by_name(&device.info, "spanani Store", Some("com.kdt.livecontainer")).await {
+                Ok(Some(info)) => {
+                    if let Err(e) = place_file(
+                        joined.into_bytes(),
+                        &provider,
+                        info.bundle_id,
+                        "spanani-cert.txt".to_string(),
+                    )
+                    .await
+                    {
+                        warn!("Failed to place spanani-cert.txt: {e}");
+                    }
+                }
+                Ok(None) => warn!("spanani Store app not found on device"),
+                Err(e) => warn!("Failed to find spanani Store app: {e}"),
+            }
+        }
+    }
 
     Ok(special)
 }
