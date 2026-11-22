@@ -57,48 +57,6 @@ export const installSpananiStoreOperation: Operation = {
   ],
 };
 
-export const installSideStoreOperation: Operation = {
-  id: "install_sidestore",
-  titleKey: "operations.install_sidestore_title",
-  successTitleKey: "operations.install_sidestore_success_title",
-  successMessageKey: "operations.install_sidestore_success_message",
-  steps: [
-    {
-      id: "download",
-      titleKey: "operations.install_sidestore_step_download",
-    },
-    {
-      id: "install",
-      titleKey: "operations.install_sidestore_step_install",
-    },
-    {
-      id: "pairing",
-      titleKey: "operations.install_sidestore_step_pairing",
-    },
-  ],
-};
-
-export const installLiveContainerOperation: Operation = {
-  id: "install_sidestore",
-  titleKey: "operations.install_livecontainer_title",
-  successTitleKey: "operations.install_livecontainer_success_title",
-  successMessageKey: "operations.install_livecontainer_success_message",
-  steps: [
-    {
-      id: "download",
-      titleKey: "operations.install_livecontainer_step_download",
-    },
-    {
-      id: "install",
-      titleKey: "operations.install_livecontainer_step_install",
-    },
-    {
-      id: "pairing",
-      titleKey: "operations.install_livecontainer_step_pairing",
-    },
-  ],
-};
-
 export const sideloadOperation = {
   id: "sideload",
   titleKey: "operations.sideload_title",

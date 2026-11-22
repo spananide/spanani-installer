@@ -191,7 +191,6 @@ export async function invoke<T = any>(
       });
     }
 
-    case "install_sidestore_operation":
     case "sideload_operation":
       return undefined as T;
 

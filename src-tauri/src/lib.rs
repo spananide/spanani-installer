@@ -26,7 +26,7 @@ use crate::{
     },
     secure_storage::{force_disable_keyring, keyring_available},
     sideload::{
-        SideloaderMutex, install_sidestore_operation, install_spanani_store_operation,
+        SideloaderMutex, install_spanani_store_operation,
         sideload_operation,
     },
 };
@@ -115,7 +115,6 @@ pub fn run() {
             sideload_operation,
             set_selected_device,
             install_spanani_store_operation,
-            install_sidestore_operation,
             get_certificates,
             revoke_certificate,
             list_app_ids,

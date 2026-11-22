@@ -10,7 +10,6 @@ import { useError } from "../ErrorContext";
 import { Virtuoso } from "react-virtuoso";
 import { useDialog } from "../DialogContext";
 import { useTranslation } from "react-i18next";
-import i18n, { sortedLanguages } from "../i18next";
 import { DeviceInfo } from "../Device";
 import { FaCopy, FaTrashCan, FaArrowsRotate } from "react-icons/fa6";
 
@@ -65,12 +64,6 @@ export const Settings = ({
     return log.level >= Number(logLevelFilter);
   });
 
-  const [lang, setLang] = useStore<string>("lang", "en");
-
-  useEffect(() => {
-    i18n.changeLanguage(lang);
-  }, [lang]);
-
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       if (event.key === undefined) return;
@@ -112,19 +105,6 @@ export const Settings = ({
           customLabel={t("settings.custom_anisette")}
           customToggleLabel={t("settings.use_custom_anisette")}
           presetToggleLabel={t("settings.back_preset_servers")}
-        />
-      </div>
-
-      <div className="settings-section">
-        <Dropdown
-          label={t("app.language")}
-          labelId="language"
-          options={sortedLanguages.map(([value, label]) => ({
-            value,
-            label,
-          }))}
-          value={lang}
-          onChange={setLang}
         />
       </div>
 

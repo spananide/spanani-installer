@@ -1,8 +1,0 @@
-@font-face{font-family:"Bric";src:url("file:///C:/Users/matti/Desktop/Apps/spanani-installer/public/fonts/bricolage-grotesque-var.woff2");font-weight:200 800}
-@font-face{font-family:"Atk";src:url("file:///C:/Users/matti/Desktop/Apps/spanani-installer/public/fonts/atkinson-next-var.woff2");font-weight:200 800}
-*{box-sizing:border-box;margin:0}
-body{width:1400px;height:780px;display:flex;gap:40px;align-items:center;justify-content:center;font-family:"Atk",sans-serif}
-.win{width:900px;height:600px;position:relative;overflow:hidden}
-.phone{width:310px;height:640px;border-radius:44px;position:relative;overflow:hidden;flex:none}
-.mark{display:inline-block;width:26px;height:26px;-webkit-mask:url("file:///C:/Users/matti/Desktop/Apps/spanani-installer/src/assets/mark.png") center/contain no-repeat;mask:url("file:///C:/Users/matti/Desktop/Apps/spanani-installer/src/assets/mark.png") center/contain no-repeat}
-h1,h2,h3,.d{font-family:"Bric",sans-serif}

@@ -12,8 +12,6 @@ import { DeviceInfo } from "../Device";
 import {
   Operation,
   sideloadOperation,
-  installSideStoreOperation,
-  installLiveContainerOperation,
 } from "./operations";
 import markLogo from "../assets/mark.png";
 import {
@@ -22,11 +20,8 @@ import {
   FaCertificate,
   FaKey,
   FaGear,
-  FaBoxesPacking,
   FaCircleInfo,
   FaArrowUpRightFromSquare,
-  FaChevronDown,
-  FaChevronRight,
   FaDownload,
 } from "react-icons/fa6";
 import "./ToolsModal.css";
@@ -37,7 +32,6 @@ type TabType =
   | "certificates"
   | "appids"
   | "settings"
-  | "other_installers"
   | "about";
 
 export const ToolsModal = ({
@@ -65,7 +59,6 @@ export const ToolsModal = ({
 }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>("sideload");
-  const [moreInstallersExpanded, setMoreInstallersExpanded] = useState(false);
 
   const ensureReady = (): boolean => {
     if (!selectedDevice) {
@@ -92,16 +85,6 @@ export const ToolsModal = ({
     } catch (e) {
       console.error(e);
       toast.error("Could not open the file");
-    }
-  };
-
-  const handleRunInstaller = async (op: Operation, params: Record<string, any>) => {
-    if (!ensureReady()) return;
-    close();
-    try {
-      await startOperation(op, params);
-    } catch (e) {
-      console.error(e);
     }
   };
 
@@ -145,14 +128,6 @@ export const ToolsModal = ({
             >
               <FaKey />
               <span>{t("tools.tab_appids")}</span>
-            </button>
-
-            <button
-              className={`tools-nav-item${activeTab === "other_installers" ? " active" : ""}`}
-              onClick={() => setActiveTab("other_installers")}
-            >
-              <FaBoxesPacking />
-              <span>{t("tools.tab_more_installers")}</span>
             </button>
 
             <button
@@ -204,110 +179,6 @@ export const ToolsModal = ({
 
           {activeTab === "appids" && <AppIds />}
 
-          {activeTab === "other_installers" && (
-            <div className="tool-view-card">
-              <h2>{t("tools.more_installers_title")}</h2>
-              <p className="tool-view-desc">{t("tools.more_installers_desc")}</p>
-
-              {(!selectedDevice || !loggedInAs) && (
-                <div className="hint-banner warning" style={{ marginBottom: "14px" }}>
-                  {t("tools.sideload_device_login_required")}
-                </div>
-              )}
-
-              <div className="installers-accordion">
-                <button
-                  type="button"
-                  className="accordion-toggle"
-                  onClick={() => setMoreInstallersExpanded(!moreInstallersExpanded)}
-                >
-                  <span>{t("tools.more_installers_title")}</span>
-                  {moreInstallersExpanded ? <FaChevronDown /> : <FaChevronRight />}
-                </button>
-
-                {moreInstallersExpanded && (
-                  <div className="accordion-body">
-                    <div className="installer-row">
-                      <div className="installer-info">
-                        <strong>{t("app.sidestore_stable")}</strong>
-                        <span>Standard SideStore Version</span>
-                      </div>
-                      <button
-                        className="primary btn-sm"
-                        disabled={!selectedDevice || !loggedInAs}
-                        onClick={() =>
-                          handleRunInstaller(installSideStoreOperation, {
-                            nightly: false,
-                            liveContainer: false,
-                          })
-                        }
-                      >
-                        Installieren
-                      </button>
-                    </div>
-
-                    <div className="installer-row">
-                      <div className="installer-info">
-                        <strong>{t("app.sidestore_nightly")}</strong>
-                        <span>Nightly build with the latest changes</span>
-                      </div>
-                      <button
-                        className="btn-sm"
-                        disabled={!selectedDevice || !loggedInAs}
-                        onClick={() =>
-                          handleRunInstaller(installSideStoreOperation, {
-                            nightly: true,
-                            liveContainer: false,
-                          })
-                        }
-                      >
-                        Installieren
-                      </button>
-                    </div>
-
-                    <div className="installer-row">
-                      <div className="installer-info">
-                        <strong>{t("app.livecontainer_sidestore_stable")}</strong>
-                        <span>LiveContainer + SideStore Stable</span>
-                      </div>
-                      <button
-                        className="btn-sm"
-                        disabled={!selectedDevice || !loggedInAs}
-                        onClick={() =>
-                          handleRunInstaller(installLiveContainerOperation, {
-                            nightly: false,
-                            liveContainer: true,
-                          })
-                        }
-                      >
-                        Installieren
-                      </button>
-                    </div>
-
-                    <div className="installer-row">
-                      <div className="installer-info">
-                        <strong>{t("app.livecontainer_sidestore_nightly")}</strong>
-                        <span>LiveContainer + SideStore Nightly</span>
-                      </div>
-                      <button
-                        className="btn-sm"
-                        disabled={!selectedDevice || !loggedInAs}
-                        onClick={() =>
-                          handleRunInstaller(installLiveContainerOperation, {
-                            nightly: true,
-                            liveContainer: true,
-                          })
-                        }
-                      >
-                        Installieren
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
           {activeTab === "settings" && (
             <Settings
               ensureSelectedDevice={ensureReady}
@@ -330,7 +201,7 @@ export const ToolsModal = ({
 
               <div className="about-body">
                 <p className="about-attribution">
-                  spanani Installer basiert auf iloader von nab138 (MIT-Lizenz).
+                  spanani Installer is based on iloader by nab138 (MIT licence).
                 </p>
 
                 <button

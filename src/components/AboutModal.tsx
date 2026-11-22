@@ -33,7 +33,7 @@ export const AboutModal = ({
 
         <div className="about-body">
           <p className="about-attribution">
-            spanani Installer basiert auf iloader von nab138 (MIT-Lizenz).
+            spanani Installer is based on iloader by nab138 (MIT licence).
           </p>
 
           <button
