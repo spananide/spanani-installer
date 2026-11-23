@@ -39,6 +39,11 @@ Requirements: Windows 10/11 x64, iTunes from apple.com (not the Microsoft Store)
 5. Install **LocalDevVPN** from the App Store and turn it on.
 6. Open **spanani Store**.
 
+### Linux
+
+Download the AppImage (`chmod +x` and run) or `.deb` from the latest build.
+Requires `usbmuxd` running (`sudo apt install usbmuxd`, or distro equivalent) and the iPhone trusted/plugged in via USB.
+
 ## FAQ
 
 <details>
