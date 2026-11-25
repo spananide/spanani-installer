@@ -163,8 +163,23 @@ pub async fn sideload_operation(
     op.start("install")?;
     op.fail_if_err(
         "install",
-        sideload(device_state, sideloader_state, app_path).await,
+        sideload(device_state.clone(), sideloader_state, app_path).await,
     )?;
+    let device = {
+        let device_guard = device_state.lock().unwrap();
+        match &*device_guard {
+            Some(d) => Some(d.clone()),
+            None => None,
+        }
+    };
+    if let Some(device) = device {
+        // Best-effort: place pairing file if spanani Store is installed.
+        match place_store_pairing(&device).await {
+            Ok(true) => {}
+            Ok(false) => {}
+            Err(e) => warn!("Could not place pairing file: {e}"),
+        }
+    }
     op.complete("install")?;
     Ok(())
 }
@@ -183,6 +198,34 @@ const LC_PAIRING_PATH: &str =
 const STORE_APP_NAME: &str = "spanani Store";
 #[cfg(not(feature = "lc"))]
 const STORE_BUNDLE_PREFIX: Option<&str> = None;
+
+async fn place_store_pairing(
+    device: &crate::device::DeviceInfoWithPairing,
+) -> Result<bool, AppError> {
+    let spanani_info =
+        get_app_info_by_name(&device.info, STORE_APP_NAME, STORE_BUNDLE_PREFIX).await?;
+    if let Some(info) = spanani_info {
+        let mut usbmuxd = get_usbmuxd().await?;
+
+        let provider = get_provider_from_connection(&device.info, &mut usbmuxd).await?;
+
+        #[cfg(feature = "lc")]
+        let pairing_path = LC_PAIRING_PATH.to_string();
+        #[cfg(not(feature = "lc"))]
+        let pairing_path = info.path;
+
+        place_file(
+            device.pairing.clone(),
+            &provider,
+            info.bundle_id,
+            pairing_path,
+        )
+        .await?;
+        Ok(true)
+    } else {
+        Ok(false)
+    }
+}
 
 #[tauri::command]
 pub async fn install_spanani_store_operation(
@@ -240,28 +283,7 @@ pub async fn install_spanani_store_operation(
         .await,
     )?;
     op.move_on("install", "pairing")?;
-    let spanani_info = op.fail_if_err(
-        "pairing",
-        get_app_info_by_name(&device.info, STORE_APP_NAME, STORE_BUNDLE_PREFIX).await,
-    )?;
-    if let Some(info) = spanani_info {
-        let mut usbmuxd = op.fail_if_err("pairing", get_usbmuxd().await)?;
-
-        let provider = op.fail_if_err(
-            "pairing",
-            get_provider_from_connection(&device.info, &mut usbmuxd).await,
-        )?;
-
-        #[cfg(feature = "lc")]
-        let pairing_path = LC_PAIRING_PATH.to_string();
-        #[cfg(not(feature = "lc"))]
-        let pairing_path = info.path;
-
-        op.fail_if_err(
-            "pairing",
-            place_file(device.pairing, &provider, info.bundle_id, pairing_path).await,
-        )?;
-    } else {
+    if !op.fail_if_err("pairing", place_store_pairing(&device).await)? {
         return op.fail(
             "pairing",
             AppError::HouseArrest(
