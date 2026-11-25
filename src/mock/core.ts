@@ -150,6 +150,16 @@ export async function invoke<T = any>(
           return;
         }
 
+        if (currentState === "maxcerts") {
+          setTimeout(() => {
+            emit("max-certs-reached", [
+              { name: "iOS Development", certificateId: "A1", serialNumber: "111", machineName: "iloader", machineId: "m1" },
+              { name: "iOS Development", certificateId: "B2", serialNumber: "222", machineName: "SideStore", machineId: "m2" },
+            ]);
+          }, 900);
+          return;
+        }
+
         if (isErrorState) {
           setTimeout(() => {
             emit("operation_install_spanani_store", {

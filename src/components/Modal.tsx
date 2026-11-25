@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import "./Modal.css";
 
 export const Modal = ({
@@ -34,7 +35,8 @@ export const Modal = ({
     };
   }, [isOpen, close]);
 
-  return (
+  // Portal to <body>: a modal opened inside a card (e.g. max certificates) must sit above the operation overlay.
+  return createPortal(
     <>
       {isOpen && (
         <div
@@ -62,6 +64,7 @@ export const Modal = ({
           </div>
         </div>
       )}
-    </>
+    </>,
+    document.body,
   );
 };
